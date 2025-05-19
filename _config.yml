@@ -18,39 +18,18 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
-title: Sam Johnston Homepage
+title: Samuel (Sam) Johnston
 email: johnston.samuelj@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
-  Navigating one thousand interests at once
-baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: jekyllrb
-github_username:  jekyll
+  Hi! I'm Sam, a data scientist passionate about environmental monitoring and modelling. 
+baseurl: "" # keep empty for github pages
+url: "https://sjjohnst.github.io"
+github_username:  sjjohnst
 
 # Build settings
-markdown: kramdown
-theme: null
+theme: minima
 plugins:
   - jekyll-feed
-
-defaults:
-  -
-    scope:
-      type: posts
-      path: _posts
-    values:
-      is_post: true
-      layout: post
-      permalink: /blog/:categories/:title/
-  -
-    scope:
-      type: pages
-      path: _pages
-    values:
-      is_post: false
-      layout: default
-
-include: [_pages]
 
 # Exclude from processing.
 # The following items will not be processed, by default.
