@@ -25,7 +25,7 @@ title: Home
 
 <section id="blog" class="section">
   <h2 class="title">Blog</h2>
-  <p>Coming soon — HAAH thoughts on data science, tooling, and practical ML.</p>
+  <p>Coming soon — thoughts on data science, tooling, and practical ML.</p>
 </section>
 
 <section id="contact" class="section">

@@ -26,11 +26,16 @@ baseurl: "" # keep empty for github pages
 url: "https://sjjohnst.github.io"
 github_username:  sjjohnst
 
+lang: en
+direction: rtl
+
 # Build settings
 # theme: bulma-clean-theme
 remote_theme: chrisrhymes/bulma-clean-theme@v0.14.0
 plugins:
   - jekyll-feed
+
+fixed_navbar: top
 
 # Exclude from processing.
 # The following items will not be processed, by default.
