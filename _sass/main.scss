@@ -1,0 +1,28 @@
+html, body {
+    height: 100%;
+    margin: 0;
+}
+  
+body {
+display: flex;
+flex-direction: column;
+min-height: 100vh;
+}
+
+.columns.is-vcentered {
+    align-items: stretch !important; /* override Bulma's is-vcentered */
+}
+
+.section {
+flex-grow: 1; /* take remaining space */
+}
+
+.custom-border {
+    border: 2px solid #3273dc; /* Bulma's primary blue color */
+    padding: 2rem;             /* optional padding */
+    border-radius: 7px;        /* optional rounded corners */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: top; /* optional: vertically center the content inside the box */
+}
