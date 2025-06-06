@@ -1,28 +1,73 @@
+@use "sass:color";
 html, body {
     height: 100%;
     margin: 0;
 }
-  
+
 body {
-display: flex;
-flex-direction: column;
-min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .columns.is-vcentered {
-    align-items: stretch !important; /* override Bulma's is-vcentered */
+    align-items: stretch !important; // override Bulma's is-vcentered
 }
 
 .section {
-flex-grow: 1; /* take remaining space */
+    flex-grow: 1; // take remaining space
 }
 
 .custom-border {
-    border: 2px solid #3273dc; /* Bulma's primary blue color */
-    padding: 2rem;             /* optional padding */
-    border-radius: 7px;        /* optional rounded corners */
+    border: 2px solid #3273dc; // Bulma's primary blue color
+    padding: 2rem;
+    border-radius: 7px;
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: top; /* optional: vertically center the content inside the box */
+    justify-content: flex-start; // 'top' is not a valid value; use flex-start
 }
+
+.custom-border p {
+    margin-bottom: 1.25rem;
+    line-height: 1.6;
+}
+.custom-border p:last-child {
+    margin-bottom: 0;
+}
+
+.custom-border a {
+    color: #3273dc; // Bulma's primary color (default)
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+
+    &:hover {
+        color: color.adjust(#3273dc, $lightness: -15%);
+        text-decoration: underline;
+    }
+}
+
+.custom-border ol {
+    margin-bottom: 1.5rem;
+    margin-left: 2.5rem; // Moved here for consistency instead of inline HTML
+}
+
+.image-container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+  
+@media screen and (min-width: 769px) {
+    .custom-border {
+        height: 100%;
+        overflow-y: auto; // prevents spillover
+    }
+
+    .image-column {
+        max-height: 500px;
+    }
+}
+  
