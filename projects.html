@@ -4,6 +4,65 @@ title: Projects
 permalink: /projects/
 ---
 
-<div class="container" style="height: 60vh; display: flex; justify-content: center; align-items: center;">
-  <h1 class="title is-2">Coming soon!</h1>
-</div>
+<!-- Basic post for Projects page -->
+<section class="section">
+  <div class="container">
+    <h1 class="title">Projects</h1>
+    <p>Welcome to my projects page! Here you'll find a collection of my work, experiments, and things I'm building. Stay tuned for updates.</p>
+    
+    <div class="projects-grid">
+      <div class="project-card">
+        <h3 class="project-title">
+          <a href="/projects/quiz-intuition-francais/">Quiz d'intuition de genre français</a>
+        </h3>
+        <p class="project-description">
+          Here's a fun little quiz I made to test wether there is any intuition about the gender of French nouns.
+        </p>
+        <div class="project-meta">
+          <span class="project-date">{{ "now" | date: "%B %Y" }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.projects-grid {
+  margin-top: 2rem;
+}
+
+.project-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  transition: box-shadow 0.3s ease;
+}
+
+.project-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.project-title {
+  margin-bottom: 0.5rem;
+}
+
+.project-title a {
+  text-decoration: none;
+  color: #333;
+}
+
+.project-title a:hover {
+  color: #007acc;
+}
+
+.project-description {
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.project-meta {
+  font-size: 0.9rem;
+  color: #888;
+}
+</style>
