@@ -1,3 +1,17 @@
 ---
 ---
 @use "main";
+
+#topography-bg {
+	position: fixed;
+	inset: 0; // avoids the horizontal scrollbar that 100vw causes
+	z-index: -1;
+	pointer-events: none;
+	overflow: hidden;
+	background: #5c5346;
+	--contour-color: #f0f2ef;
+
+	canvas {
+		display: block;
+	}
+}
