@@ -10,6 +10,10 @@ body {
     min-height: 100vh;
 }
 
+html {
+    background-color: #ffffff;
+}
+
 .columns.is-vcentered {
     align-items: stretch !important; // override Bulma's is-vcentered
 }
@@ -74,3 +78,13 @@ body {
     }
 }
   
+.footer {
+    padding: 1.25rem 1.25rem;   /* override Bulma's default 3rem / 6rem */
+}
+
+.footer img[alt~="Creative Commons License"] {
+    height: 1.0em;        /* roughly matches text size */
+    width: auto;
+    vertical-align: bottom;
+    margin-left: 0.75em;
+}
