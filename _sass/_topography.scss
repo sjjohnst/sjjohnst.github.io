@@ -1,11 +1,13 @@
+@use "variables";
+
 #topography-bg {
 	position: fixed;
 	inset: 0;
 	z-index: -1;
 	pointer-events: none;
 	overflow: hidden;
-	background: #022B3A;
-	--contour-color: #BFD7EA;
+	background: variables.$color-dark-bg;
+	--contour-color: variables.$color-light-accent;
 
 	canvas {
 		display: block;

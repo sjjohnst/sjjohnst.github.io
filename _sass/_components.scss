@@ -1,16 +1,17 @@
 @use "sass:color";
+@use "variables";
 
 .custom-border {
-    background-color: rgba(40, 40, 40, 0.87);
+    background-color: variables.$color-dark-overlay;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.24), 0 2px 4px rgba(0, 0, 0, 0.12);
-    border: 2px solid #000000;
+    border: 2px solid variables.$color-black;
     padding: 2rem;
     border-radius: 7px;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    background: #fff;
+    background: variables.$color-white;
 }
 
 .custom-border p {
@@ -23,13 +24,13 @@
 }
 
 .custom-border a {
-    color: #3273dc;
+    color: variables.$color-primary;
     font-weight: 500;
     text-decoration: none;
     transition: all 0.2s ease;
 
     &:hover {
-        color: color.adjust(#3273dc, $lightness: -15%);
+        color: color.adjust(variables.$color-primary, $lightness: -15%);
         text-decoration: underline;
     }
 }
