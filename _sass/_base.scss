@@ -3,6 +3,8 @@
 html, body {
     height: 100%;
     margin: 0;
+    font-family: variables.$font-family-default;
+    font-size: variables.$body-size;
 }
 
 body {
