@@ -5,8 +5,8 @@
     background-color: variables.$color-dark-overlay;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.24), 0 2px 4px rgba(0, 0, 0, 0.12);
     border: 2px solid variables.$color-black;
-    padding: 2rem;
-    border-radius: 7px;
+    padding: variables.$space-2xl;
+    border-radius: variables.$border-radius-sm;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -15,8 +15,8 @@
 }
 
 .custom-border p {
-    margin-bottom: 1.25rem;
-    line-height: 1.6;
+    margin-bottom: variables.$space-lg;
+    line-height: variables.$line-height-relaxed;
 }
 
 .custom-border p:last-child {
@@ -25,9 +25,9 @@
 
 .custom-border a {
     color: variables.$color-primary;
-    font-weight: 500;
+    font-weight: variables.$font-weight-semibold;
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: all variables.$transition-standard;
 
     &:hover {
         color: color.adjust(variables.$color-primary, $lightness: -15%);
@@ -36,8 +36,8 @@
 }
 
 .custom-border ol {
-    margin-bottom: 1.5rem;
-    margin-left: 2.5rem;
+    margin-bottom: variables.$space-xl;
+    margin-left: variables.$space-3xl;
 }
 
 .image-container {

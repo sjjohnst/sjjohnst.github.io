@@ -1,10 +1,12 @@
+@use "variables";
+
 .footer {
-    padding: 1.25rem 1.25rem;
+    padding: variables.$space-lg variables.$space-lg;
 }
 
 .footer img[alt~="Creative Commons License"] {
     height: 1.0em;
     width: auto;
     vertical-align: bottom;
-    margin-left: 0.75em;
+    margin-left: variables.$space-sm;
 }

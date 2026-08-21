@@ -8,3 +8,23 @@ $color-light-accent: #BFD7EA;
 $color-white: #ffffff;
 $color-black: #000000;
 $color-dark-overlay: rgba(40, 40, 40, 0.87);
+
+// Spacing Tokens
+$space-xs: 0.5rem;
+$space-sm: 0.75rem;
+$space-md: 1rem;
+$space-lg: 1.25rem;
+$space-xl: 1.5rem;
+$space-2xl: 2rem;
+$space-3xl: 2.5rem;
+
+// Typography Tokens
+$font-weight-normal: 400;
+$font-weight-semibold: 500;
+$line-height-relaxed: 1.6;
+
+// Border & Radius
+$border-radius-sm: 7px;
+
+// Transitions
+$transition-standard: 0.2s ease;
