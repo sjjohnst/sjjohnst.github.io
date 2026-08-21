@@ -37,6 +37,7 @@ plugins:
   - jemoji
 
 fixed_navbar: top
+favicon: /assets/favicon-package/favicon.ico
 
 # Exclude from processing.
 # The following items will not be processed, by default.
