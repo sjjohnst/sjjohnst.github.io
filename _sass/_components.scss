@@ -1,37 +1,15 @@
 @use "sass:color";
-html, body {
-    height: 100%;
-    margin: 0;
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-html {
-    background-color: #ffffff;
-}
-
-.columns.is-vcentered {
-    align-items: stretch !important; // override Bulma's is-vcentered
-}
-
-.section {
-    flex-grow: 1; // take remaining space
-}
 
 .custom-border {
     background-color: rgba(40, 40, 40, 0.87);
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.24), 0 2px 4px rgba(0, 0, 0, 0.12);
-    border: 2px solid #000000; // solid black border
+    border: 2px solid #000000;
     padding: 2rem;
     border-radius: 7px;
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; // 'top' is not a valid value; use flex-start
+    justify-content: flex-start;
     background: #fff;
 }
 
@@ -39,12 +17,13 @@ html {
     margin-bottom: 1.25rem;
     line-height: 1.6;
 }
+
 .custom-border p:last-child {
     margin-bottom: 0;
 }
 
 .custom-border a {
-    color: #3273dc; // Bulma's primary color (default)
+    color: #3273dc;
     font-weight: 500;
     text-decoration: none;
     transition: all 0.2s ease;
@@ -57,7 +36,7 @@ html {
 
 .custom-border ol {
     margin-bottom: 1.5rem;
-    margin-left: 2.5rem; // Moved here for consistency instead of inline HTML
+    margin-left: 2.5rem;
 }
 
 .image-container {
@@ -66,25 +45,14 @@ html {
     align-items: center;
     justify-content: center;
 }
-  
+
 @media screen and (min-width: 769px) {
     .custom-border {
         height: 100%;
-        overflow-y: auto; // prevents spillover
+        overflow-y: auto;
     }
 
     .image-column {
         max-height: 500px;
     }
-}
-  
-.footer {
-    padding: 1.25rem 1.25rem;   /* override Bulma's default 3rem / 6rem */
-}
-
-.footer img[alt~="Creative Commons License"] {
-    height: 1.0em;        /* roughly matches text size */
-    width: auto;
-    vertical-align: bottom;
-    margin-left: 0.75em;
 }

@@ -2,13 +2,9 @@ import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
 
 const container = document.getElementById("topography-bg");
 
-// Contour line colour lives with the background it contrasts against, in
-// #topography-bg's --contour-color (assets/css/styles.scss).
-const FALLBACK_FG = "#c2ab8c";
-
 function contourColor(el) {
   const css = getComputedStyle(el).getPropertyValue("--contour-color").trim();
-  return new THREE.Color(css || FALLBACK_FG);
+  return new THREE.Color(css);
 }
 
 const vs = `
