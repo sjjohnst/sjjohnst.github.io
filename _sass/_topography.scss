@@ -7,7 +7,7 @@
 	pointer-events: none;
 	overflow: hidden;
 	background: variables.$color-dark-bg;
-	--contour-color: variables.$color-light-accent;
+	--contour-color: #{variables.$color-light-accent};
 
 	canvas {
 		display: block;
