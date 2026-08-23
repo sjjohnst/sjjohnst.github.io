@@ -2,16 +2,15 @@
 @use "variables";
 
 .custom-border {
-    background-color: variables.$color-dark-overlay;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.24), 0 2px 4px rgba(0, 0, 0, 0.12);
-    border: 2px solid variables.$color-black;
+    border: 3px solid variables.$text-default;
     padding: variables.$space-2xl;
     border-radius: variables.$border-radius-sm;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    background: variables.$color-white;
+    background: variables.$palm-leaf;
 }
 
 .custom-border p {
@@ -24,13 +23,13 @@
 }
 
 .custom-border a {
-    color: variables.$color-primary;
+    color: variables.$href-link;
     font-weight: variables.$font-weight-semibold;
     text-decoration: none;
     transition: all variables.$transition-standard;
 
     &:hover {
-        color: color.adjust(variables.$color-primary, $lightness: -15%);
+        color: color.adjust(variables.$href-link, $lightness: -15%);
         text-decoration: underline;
     }
 }

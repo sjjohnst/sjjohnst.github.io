@@ -1,19 +1,20 @@
-// Color Tokens
-$color-primary: #797d62;
-$color-primary-light: #9b9b7a;
-
-$color-dark-bg: #797d62;
-$color-light-accent: #ffcb70;
-
-$color-secondary: #d08c60;
-$color-secondary-light: #f0b27a;
-
-$color-white: #fefae0;
-$color-black: #000000;
-$color-dark-overlay: rgba(40, 40, 40, 0.87);
-
+// Color Palette
+$dusty-olive: #797d62;
+$palm-leaf: #9b9b7a;
+$khaki-beige: #baa587;
+$desert-sand: #d9ae94;
+$ash-grey: #aeb0a4;
+$dust-grey: #dbdbd5;
 $black: #1f201d;
+$sunlit-clay: #e8ac65;
+$toasted-almond: #d08c60;
+$faded-copper: #b58463;
+$dusty-taupe: #997b66;
+
+// Semantic Color Tokens
 $text-default: $black;
+$href-link: $khaki-beige;
+$bg-page: $dust-grey;
 
 // Spacing Tokens
 $space-xs: 0.5rem;
