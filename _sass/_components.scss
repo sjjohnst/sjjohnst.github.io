@@ -41,6 +41,9 @@
 }
 
 .image-container {
+    border: 3px solid variables.$text-default;
+    border-radius: variables.$border-radius-sm;
+    overflow: hidden;
     height: 100%;
     display: flex;
     align-items: center;
