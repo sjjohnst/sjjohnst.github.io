@@ -1,0 +1,41 @@
+@use "sass:color";
+@use "variables";
+
+.projects-grid {
+    margin-top: variables.$space-2xl;
+}
+
+.project-card {
+    border: 1px solid variables.$border-subtle;
+    border-radius: variables.$border-radius-sm;
+    padding: variables.$space-xl;
+    margin-bottom: variables.$space-xl;
+    transition: box-shadow variables.$transition-standard;
+}
+
+.project-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.project-title {
+    margin-bottom: variables.$space-xs;
+}
+
+.project-title a {
+    text-decoration: none;
+    color: variables.$text-default;
+
+    &:hover {
+        color: variables.$href-link;
+    }
+}
+
+.project-description {
+    color: variables.$text-muted;
+    margin-bottom: variables.$space-md;
+}
+
+.project-meta {
+    font-size: variables.$font-size-sm;
+    color: color.adjust(variables.$text-muted, $lightness: 12%);
+}

@@ -1,0 +1,92 @@
+@use "sass:color";
+@use "variables";
+
+.navbar.is-light {
+    background-color: transparent !important;
+    justify-content: center;
+    align-items: center;
+    padding: variables.$space-sm variables.$space-2xl;
+    margin-top: variables.$space-sm;
+    gap: variables.$space-sm;
+}
+
+.navbar-brand,
+.navbar-menu,
+.navbar-start,
+.navbar-end {
+    align-items: center;
+}
+
+.navbar-brand {
+    min-height: auto;
+    overflow: visible;
+}
+
+.navbar-brand,
+.navbar-start,
+.navbar-end {
+    gap: variables.$space-sm;
+}
+
+.navbar-menu {
+    flex-grow: 0;
+    background: transparent;
+}
+
+.navbar-end {
+    margin-left: 0 !important;
+}
+
+.navbar-burger {
+    color: variables.$text-default;
+}
+
+a.navbar-item,
+.button.is-light {
+    height: 2.75rem;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+a.navbar-item {
+    font-size: variables.$font-size-lg;
+    padding: 0 variables.$space-lg;
+    background-color: variables.$bg-page !important;
+    color: variables.$text-default !important;
+    border-radius: variables.$border-radius-sm;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    transition: all variables.$transition-standard;
+
+    &:hover {
+        background-color: color.adjust(variables.$bg-page, $lightness: -8%) !important;
+        color: variables.$href-link !important;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transform: translateY(-1px);
+    }
+}
+
+.button.is-light {
+    background-color: variables.$bg-page !important;
+    color: variables.$text-default !important;
+    border: none;
+    border-radius: variables.$border-radius-sm;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    transition: all variables.$transition-standard;
+
+    &:hover {
+        background-color: color.adjust(variables.$bg-page, $lightness: -8%) !important;
+        color: variables.$href-link !important;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transform: translateY(-1px);
+    }
+}
+
+.navbar-end .icon {
+    font-size: variables.$font-size-lg;
+}
+
+.navbar-end .buttons {
+    gap: variables.$space-sm;
+}

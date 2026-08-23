@@ -2,6 +2,8 @@
 
 .footer {
     padding: variables.$space-lg variables.$space-lg;
+    background-color: variables.$bg-page;
+    color: variables.$text-muted;
 }
 
 .footer img[alt~="Creative Commons License"] {
