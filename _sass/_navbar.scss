@@ -57,11 +57,11 @@ a.navbar-item {
     @include containers.container-lift;
     font-size: variables.$font-size-lg;
     padding: 0 variables.$space-lg;
-    background-color: variables.$bg-page !important;
+    background-color: variables.$bg-container !important;
     color: variables.$text-default !important;
 
     &:hover {
-        background-color: color.adjust(variables.$bg-page, $lightness: -8%) !important;
+        background-color: color.adjust(variables.$bg-container, $lightness: -8%) !important;
         color: variables.$href-link !important;
     }
 }
@@ -70,12 +70,12 @@ a.navbar-item {
     @include containers.container-base;
     @include containers.container-elevated;
     @include containers.container-lift;
-    background-color: variables.$bg-page !important;
+    background-color: variables.$bg-container !important;
     color: variables.$text-default !important;
     border: none;
 
     &:hover {
-        background-color: color.adjust(variables.$bg-page, $lightness: -8%) !important;
+        background-color: color.adjust(variables.$bg-container, $lightness: -8%) !important;
         color: variables.$href-link !important;
     }
 }

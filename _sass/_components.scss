@@ -7,9 +7,9 @@
     @include containers.container-bordered;
     @include containers.container-elevated((0 2px 2px rgba(0, 0, 0, 0.24), 0 2px 4px rgba(0, 0, 0, 0.12)));
     @include containers.container-flex-column;
-    padding: variables.$space-2xl;
+    padding: variables.$space-lg;
     height: 100%;
-    background: variables.$bg-page;
+    background: variables.$bg-container;
 }
 
 .text-container p {
@@ -51,9 +51,5 @@
     .text-container {
         height: 100%;
         overflow-y: auto;
-    }
-
-    .image-column {
-        max-height: 500px;
     }
 }
