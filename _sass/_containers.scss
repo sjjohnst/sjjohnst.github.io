@@ -38,3 +38,50 @@
     align-items: center;
     justify-content: center;
 }
+
+// Subtle film-grain / noise overlay for retro poster-style background
+// blocks. Relies on an SVG fractal-noise filter rather than an image
+// asset, so it stays lightweight and tint-agnostic.
+@mixin container-grain($opacity: 0.06) {
+    position: relative;
+    isolation: isolate;
+
+    &::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        pointer-events: none;
+        border-radius: inherit;
+        opacity: $opacity;
+        mix-blend-mode: overlay;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+        background-size: 160px 160px;
+    }
+}
+
+// Ensures direct children stack above the grain overlay's ::after.
+@mixin container-grain-content {
+    position: relative;
+    z-index: 2;
+}
+
+// Rounded, bordered "floating badge" pill — used for corner tags like
+// retro stamp/seal accents overlapping a container's edge.
+@mixin pill-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    border: 2px solid variables.$border-retro;
+    padding: variables.$space-xs variables.$space-lg;
+    font-family: variables.$font-family-mono-retro;
+    font-size: variables.$font-size-sm;
+    font-weight: variables.$font-weight-semibold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: variables.$warm-cream;
+    color: variables.$charcoal;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    white-space: nowrap;
+}

@@ -4,12 +4,20 @@
 
 .text-container {
     @include containers.container-base;
-    @include containers.container-bordered;
+    @include containers.container-bordered(3px, variables.$border-retro);
     @include containers.container-elevated((0 2px 2px rgba(0, 0, 0, 0.24), 0 2px 4px rgba(0, 0, 0, 0.12)));
     @include containers.container-flex-column;
-    padding: variables.$space-lg;
+    border-radius: variables.$border-radius-lg;
+    padding: variables.$space-xl;
     height: 100%;
-    background: variables.$bg-container;
+    background: variables.$warm-cream;
+    color: variables.$charcoal;
+    font-family: variables.$font-family-mono-retro;
+}
+
+.text-container .title {
+    font-family: variables.$font-family-heading-retro;
+    color: variables.$deep-olive;
 }
 
 .text-container p {
@@ -40,9 +48,10 @@
 
 .image-container {
     @include containers.container-base;
-    @include containers.container-bordered;
+    @include containers.container-bordered(3px, variables.$border-retro);
     @include containers.container-elevated;
     @include containers.container-flex-center;
+    border-radius: variables.$border-radius-lg;
     overflow: hidden;
     height: 100%;
 }
@@ -52,4 +61,16 @@
         height: 100%;
         overflow-y: auto;
     }
+}
+
+// Retro decorative primitives, shared across the hero/featured/highlights
+// rows: a floating rounded "seal" badge and a spiky sun/starburst icon.
+.badge-pill {
+    @include containers.pill-badge;
+}
+
+.starburst {
+    width: 3rem;
+    height: 3rem;
+    color: variables.$mustard-yellow;
 }

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/assets/css/main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-package/favicon-96x96.png">
     <link rel="icon" href="/assets/favicon-package/favicon.svg" type="image/svg+xml" sizes="any">
     <link rel="icon" href="/assets/favicon-package/favicon.ico">
@@ -87,7 +87,7 @@
         {{ content }}
       </div>
     </section>
-    <!-- Watermark -->
-    <div class="watermark">&copy; {{ 'now' | date: '%Y' }} Samuel Johnston</div>
+    {%- comment -%} <!-- Watermark -->
+    <div class="watermark">&copy; {{ 'now' | date: '%Y' }} Samuel Johnston</div> {%- endcomment -%}
   </body>
 </html>

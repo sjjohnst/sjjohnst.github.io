@@ -11,17 +11,19 @@ permalink: /projects/
     <p>Welcome to my projects page! Here you'll find a collection of my work, experiments, and things I'm building. Stay tuned for updates.</p>
     
     <div class="projects-grid">
+      {% for project in site.data.projects %}
       <div class="project-card">
         <h3 class="project-title">
-          <a href="/projects/quiz-intuition-francais/">Quiz d'intuition de genre français</a>
+          <a href="{{ project.url }}">{{ project.title }}</a>
         </h3>
         <p class="project-description">
-          Here's a fun little quiz I made to test wether there is any intuition about the gender of French nouns.
+          {{ project.description }}
         </p>
         <div class="project-meta">
-          <span class="project-date">{{ "2024-08-01" | date: "%B %Y" }}</span>
+          <span class="project-date">{{ project.date | date: "%B %Y" }}</span>
         </div>
       </div>
+      {% endfor %}
     </div>
   </div>
 </section>

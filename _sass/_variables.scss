@@ -17,7 +17,25 @@ $text-muted: $palm-leaf;
 $href-link: #5d3d27;
 $bg-page: $dusty-olive;
 $bg-container: $ash-grey;
+$bg-container-2: $khaki-beige;
 $border-subtle: $ash-grey;
+
+// Retro palette (70s earthy editorial trial — additive, not yet replacing
+// the tokens above). Used by the homepage hero/featured/highlights rows.
+$deep-olive: #524f22;
+$mustard-yellow: #b8a221;
+$dark-moss: #33320f;
+$warm-cream: #ece3d3;
+$charcoal: #2b2a26;
+
+// Retro semantic tokens
+$bg-hero-retro: $deep-olive;
+$bg-featured-retro: $mustard-yellow;
+$bg-highlight-card-retro: $warm-cream;
+$text-heading-retro: $warm-cream;
+$text-on-mustard: $charcoal;
+$text-on-cream: $charcoal;
+$border-retro: $charcoal;
 
 // Spacing Tokens
 $space-xs: 0.5rem;
@@ -31,6 +49,10 @@ $space-3xl: 2.5rem;
 // Typography - Font Families
 // Default system font stack (can be changed to a single font or Google Font later)
 $font-family-default: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+// Retro typography (70s earthy editorial trial)
+$font-family-heading-retro: "Fraunces", Georgia, "Times New Roman", serif;
+$font-family-mono-retro: "Space Mono", "Courier New", monospace;
 
 // Typography - Font Sizes
 $font-size-sm: 0.875rem;
@@ -53,6 +75,8 @@ $line-height-relaxed: 1.6;
 
 // Border & Radius
 $border-radius-sm: 7px;
+$border-radius-lg: 28px;
+$border-radius-xl: 36px;
 
 // Transitions
 $transition-standard: 0.2s ease;

@@ -1,0 +1,12 @@
+- title: Data
+  description: >-
+    Wrangling satellite imagery and remote sensing datasets into clean,
+    analysis-ready pipelines at scale.
+- title: Engineering
+  description: >-
+    Building and deploying ML pipelines and tools that turn research code
+    into reliable, production-ready systems.
+- title: Research
+  description: >-
+    Exploring spatial-temporal forecasting methods and pushing on open
+    questions in earth observation.

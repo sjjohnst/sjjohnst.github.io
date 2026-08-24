@@ -1,0 +1,46 @@
+@use "variables";
+@use "containers";
+
+// Homepage "Highlights" row: a 3-column grid of cream cards breaking
+// down key focus areas.
+.highlights-section {
+    padding-top: variables.$space-xl;
+    padding-bottom: variables.$space-3xl;
+}
+
+.highlight-card {
+    @include containers.container-base;
+    @include containers.container-bordered(3px, variables.$border-retro);
+    @include containers.container-elevated;
+    @include containers.container-lift;
+    position: relative;
+    border-radius: variables.$border-radius-lg;
+    padding: variables.$space-xl;
+    height: 100%;
+    background: variables.$warm-cream;
+    color: variables.$text-on-cream;
+}
+
+.highlight-card-starburst {
+    width: 2rem;
+    height: 2rem;
+    margin-bottom: variables.$space-md;
+}
+
+.highlight-title {
+    font-family: variables.$font-family-heading-retro;
+    font-size: variables.$font-size-xl;
+    color: variables.$deep-olive;
+    margin-bottom: variables.$space-sm;
+}
+
+.highlight-description {
+    font-family: variables.$font-family-mono-retro;
+    line-height: variables.$line-height-relaxed;
+}
+
+@media screen and (max-width: 768px) {
+    .highlight-card {
+        margin-bottom: variables.$space-lg;
+    }
+}

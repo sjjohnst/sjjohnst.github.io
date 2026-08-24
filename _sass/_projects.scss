@@ -1,5 +1,6 @@
 @use "sass:color";
 @use "variables";
+@use "containers";
 
 .projects-grid {
     margin-top: variables.$space-2xl;
@@ -38,4 +39,115 @@
 .project-meta {
     font-size: variables.$font-size-sm;
     color: color.adjust(variables.$text-muted, $lightness: 12%);
+}
+
+// Homepage "Featured Project" banner: a full-width mustard block with a
+// 2-column layout — title/description/CTA on the left, a framed
+// screenshot with an overlapping badge on the right.
+.featured-project-section {
+    padding-top: variables.$space-2xl;
+    padding-bottom: variables.$space-2xl;
+}
+
+.featured-project-card {
+    @include containers.container-grain(0.08);
+    border-radius: variables.$border-radius-xl;
+    padding: variables.$space-2xl;
+    background: variables.$mustard-yellow;
+
+    > .columns {
+        @include containers.container-grain-content;
+    }
+}
+
+.featured-project-text {
+    color: variables.$text-on-mustard;
+}
+
+.section-eyebrow {
+    display: block;
+    font-family: variables.$font-family-mono-retro;
+    font-size: variables.$font-size-sm;
+    font-weight: variables.$font-weight-semibold;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: variables.$space-sm;
+}
+
+.featured-project-title {
+    font-family: variables.$font-family-heading-retro;
+    color: variables.$charcoal !important;
+    margin-bottom: variables.$space-md;
+}
+
+.featured-project-description {
+    font-family: variables.$font-family-mono-retro;
+    line-height: variables.$line-height-relaxed;
+    margin-bottom: variables.$space-xl;
+}
+
+.featured-project-cta {
+    @include containers.container-lift;
+    border-radius: 999px;
+    border: 2px solid variables.$charcoal;
+    padding: 0 variables.$space-xl;
+    height: 2.75rem;
+    background: variables.$charcoal !important;
+    color: variables.$warm-cream !important;
+    font-family: variables.$font-family-mono-retro;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+
+    &:hover {
+        background: variables.$deep-olive !important;
+    }
+}
+
+.featured-project-media {
+    position: relative;
+}
+
+.featured-project-image-frame {
+    @include containers.container-bordered(3px, variables.$border-retro);
+    border-radius: 20px;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+}
+
+.featured-project-placeholder {
+    @include containers.container-flex-center;
+    width: 100%;
+    height: 100%;
+    background: variables.$deep-olive;
+}
+
+.featured-project-placeholder-icon {
+    width: 5rem;
+    height: 5rem;
+    color: variables.$warm-cream;
+}
+
+.featured-project-badge {
+    position: absolute;
+    right: variables.$space-lg;
+    bottom: -1.25rem;
+    transform: rotate(-6deg);
+}
+
+@media screen and (max-width: 768px) {
+    .featured-project-card {
+        padding: variables.$space-xl;
+    }
+
+    .featured-project-media {
+        margin-top: variables.$space-xl;
+    }
 }

@@ -1,4 +1,5 @@
 @use "variables";
+@use "containers";
 
 // Homepage hero row: headshot + bio, pulled up toward the header and
 // widened toward the viewport edges.
@@ -12,4 +13,41 @@
 .hero-section .container.is-fluid {
     padding-left: variables.$space-xs;
     padding-right: variables.$space-xs;
+}
+
+// Full-width rounded "poster block" wrapping the hero row in the deep
+// olive retro palette, with a grain texture and a floating starburst
+// accent in the top-right corner.
+.hero-card {
+    @include containers.container-grain(0.08);
+    position: relative;
+    border-radius: variables.$border-radius-xl;
+    padding: variables.$space-2xl;
+    background: variables.$deep-olive;
+
+    > .columns {
+        @include containers.container-grain-content;
+    }
+}
+
+.hero-card-starburst {
+    position: absolute;
+    top: variables.$space-xl;
+    right: variables.$space-xl;
+    width: 4rem;
+    height: 4rem;
+    z-index: 2;
+}
+
+@media screen and (max-width: 768px) {
+    .hero-card {
+        padding: variables.$space-xl;
+    }
+
+    .hero-card-starburst {
+        width: 2.5rem;
+        height: 2.5rem;
+        top: variables.$space-lg;
+        right: variables.$space-lg;
+    }
 }
