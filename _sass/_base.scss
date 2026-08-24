@@ -1,11 +1,16 @@
 @use "sass:color";
 @use "variables";
 
+html {
+    // Scales everything set in rem (spacing, font sizes) down uniformly,
+    // similar to a browser zoom-out, so the hero row fits without cutoff.
+    font-size: 90%;
+}
+
 html, body {
     height: 100%;
     margin: 0;
     font-family: variables.$font-family-default;
-    font-size: variables.$body-size;
 }
 
 body {

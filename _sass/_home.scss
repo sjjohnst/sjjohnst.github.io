@@ -3,20 +3,13 @@
 // Homepage hero row: headshot + bio, pulled up toward the header and
 // widened toward the viewport edges.
 .hero-section {
-    padding-top: variables.$space-sm;
-    padding-bottom: variables.$space-xl;
+    padding-top: variables.$space-xs;
+    padding-bottom: variables.$space-xs;
     padding-left: 0;
     padding-right: 0;
 }
 
 .hero-section .container.is-fluid {
-    padding-left: variables.$space-md;
-    padding-right: variables.$space-md;
-}
-
-@media screen and (min-width: 769px) {
-    .image-column,
-    .text-column {
-        height: 420px;
-    }
+    padding-left: variables.$space-xs;
+    padding-right: variables.$space-xs;
 }
