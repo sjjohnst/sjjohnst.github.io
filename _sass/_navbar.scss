@@ -1,0 +1,89 @@
+@use "sass:color";
+@use "variables";
+@use "containers";
+
+.navbar.is-light {
+    background-color: transparent !important;
+    justify-content: center;
+    align-items: center;
+    padding: variables.$space-sm variables.$space-2xl;
+    margin-top: variables.$space-sm;
+    gap: variables.$space-sm;
+}
+
+.navbar-brand,
+.navbar-menu,
+.navbar-start,
+.navbar-end {
+    align-items: center;
+}
+
+.navbar-brand {
+    min-height: auto;
+    overflow: visible;
+}
+
+.navbar-brand,
+.navbar-start,
+.navbar-end {
+    gap: variables.$space-sm;
+}
+
+.navbar-menu {
+    flex-grow: 0;
+    background: transparent;
+}
+
+.navbar-end {
+    margin-left: 0 !important;
+}
+
+.navbar-burger {
+    color: variables.$text-default;
+}
+
+a.navbar-item,
+.button.is-light {
+    height: 2.75rem;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+a.navbar-item {
+    @include containers.container-base;
+    @include containers.container-elevated(0 4px 6px rgba(0, 0, 0, 0.15));
+    @include containers.container-lift;
+    font-size: variables.$font-size-lg;
+    padding: 0 variables.$space-lg;
+    background-color: variables.$bg-container !important;
+    color: variables.$text-default !important;
+
+    &:hover {
+        background-color: color.adjust(variables.$bg-container, $lightness: -8%) !important;
+        color: variables.$href-link !important;
+    }
+}
+
+.button.is-light {
+    @include containers.container-base;
+    @include containers.container-elevated;
+    @include containers.container-lift;
+    background-color: variables.$bg-container !important;
+    color: variables.$text-default !important;
+    border: none;
+
+    &:hover {
+        background-color: color.adjust(variables.$bg-container, $lightness: -8%) !important;
+        color: variables.$href-link !important;
+    }
+}
+
+.navbar-end .icon {
+    font-size: variables.$font-size-lg;
+}
+
+.navbar-end .buttons {
+    gap: variables.$space-sm;
+}

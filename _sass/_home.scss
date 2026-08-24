@@ -1,0 +1,15 @@
+@use "variables";
+
+// Homepage hero row: headshot + bio, pulled up toward the header and
+// widened toward the viewport edges.
+.hero-section {
+    padding-top: variables.$space-xs;
+    padding-bottom: variables.$space-xs;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.hero-section .container.is-fluid {
+    padding-left: variables.$space-xs;
+    padding-right: variables.$space-xs;
+}

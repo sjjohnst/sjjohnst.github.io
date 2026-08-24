@@ -1,0 +1,46 @@
+@use "sass:color";
+@use "variables";
+
+html {
+    // Scales everything set in rem (spacing, font sizes) down uniformly,
+    // similar to a browser zoom-out, so the hero row fits without cutoff.
+    font-size: 90%;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: variables.$font-family-default;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    color: variables.$text-default;
+}
+
+.title,
+.subtitle {
+    color: variables.$text-default;
+}
+
+a {
+    color: variables.$href-link;
+
+    &:hover {
+        color: color.adjust(variables.$href-link, $lightness: -15%);
+    }
+}
+
+html {
+    background-color: variables.$bg-page;
+}
+
+.columns.is-vcentered {
+    align-items: stretch !important;
+}
+
+.section {
+    flex-grow: 1;
+}

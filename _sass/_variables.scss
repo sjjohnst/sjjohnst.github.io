@@ -1,0 +1,58 @@
+// Color Palette
+$dusty-olive: #797d62;
+$palm-leaf: #9b9b7a;
+$khaki-beige: #baa587;
+$desert-sand: #d9ae94;
+$ash-grey: #aeb0a4;
+$dust-grey: #dbdbd5;
+$black: #1f201d;
+$sunlit-clay: #e8ac65;
+$toasted-almond: #d08c60;
+$faded-copper: #b58463;
+$dusty-taupe: #997b66;
+
+// Semantic Color Tokens
+$text-default: $black;
+$text-muted: $palm-leaf;
+$href-link: #5d3d27;
+$bg-page: $dusty-olive;
+$bg-container: $ash-grey;
+$border-subtle: $ash-grey;
+
+// Spacing Tokens
+$space-xs: 0.5rem;
+$space-sm: 0.75rem;
+$space-md: 1rem;
+$space-lg: 1.25rem;
+$space-xl: 1.5rem;
+$space-2xl: 2rem;
+$space-3xl: 2.5rem;
+
+// Typography - Font Families
+// Default system font stack (can be changed to a single font or Google Font later)
+$font-family-default: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+// Typography - Font Sizes
+$font-size-sm: 0.875rem;
+$font-size-base: 1rem;
+$font-size-lg: 1.25rem;
+$font-size-xl: 1.5rem;
+$font-size-2xl: 2rem;
+
+// Typography - Size Scales
+$heading-size-lg: $font-size-2xl;
+$heading-size-md: $font-size-xl;
+$heading-size-sm: $font-size-lg;
+$body-size: $font-size-base;
+$small-size: $font-size-sm;
+
+// Typography - Font Weights
+$font-weight-normal: 400;
+$font-weight-semibold: 500;
+$line-height-relaxed: 1.6;
+
+// Border & Radius
+$border-radius-sm: 7px;
+
+// Transitions
+$transition-standard: 0.2s ease;

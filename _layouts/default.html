@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <title>{{ page.title }}</title>
     {% include head.html %}
-    <link rel="stylesheet" href="/assets/css/styles.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-package/favicon-96x96.png">
     <link rel="icon" href="/assets/favicon-package/favicon.svg" type="image/svg+xml" sizes="any">
     <link rel="icon" href="/assets/favicon-package/favicon.ico">
@@ -84,16 +87,7 @@
         {{ content }}
       </div>
     </section>
-    <!-- Footer -->
-    <footer class="footer has-text-centered">
-      <p>
-        Made with <a href="https://jekyllrb.com">Jekyll</a> and <a href="https://bulma.io">Bulma</a> ·
-        Creative Commons License
-        <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">
-          <img alt="Creative Commons License" style="border-width:0"
-               src="https://i.creativecommons.org/l/by/4.0/88x31.png" />
-        </a>
-      </p>
-    </footer>
+    <!-- Watermark -->
+    <div class="watermark">&copy; {{ 'now' | date: '%Y' }} Samuel Johnston</div>
   </body>
 </html>

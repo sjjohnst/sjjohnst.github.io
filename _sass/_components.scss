@@ -1,0 +1,55 @@
+@use "sass:color";
+@use "variables";
+@use "containers";
+
+.text-container {
+    @include containers.container-base;
+    @include containers.container-bordered;
+    @include containers.container-elevated((0 2px 2px rgba(0, 0, 0, 0.24), 0 2px 4px rgba(0, 0, 0, 0.12)));
+    @include containers.container-flex-column;
+    padding: variables.$space-lg;
+    height: 100%;
+    background: variables.$bg-container;
+}
+
+.text-container p {
+    margin-bottom: variables.$space-lg;
+    line-height: variables.$line-height-relaxed;
+}
+
+.text-container p:last-child {
+    margin-bottom: 0;
+}
+
+.text-container a {
+    color: variables.$href-link;
+    font-weight: variables.$font-weight-semibold;
+    text-decoration: none;
+    transition: all variables.$transition-standard;
+
+    &:hover {
+        color: color.adjust(variables.$href-link, $lightness: -15%);
+        text-decoration: underline;
+    }
+}
+
+.text-container ol {
+    margin-bottom: variables.$space-xl;
+    margin-left: variables.$space-3xl;
+}
+
+.image-container {
+    @include containers.container-base;
+    @include containers.container-bordered;
+    @include containers.container-elevated;
+    @include containers.container-flex-center;
+    overflow: hidden;
+    height: 100%;
+}
+
+@media screen and (min-width: 769px) {
+    .text-container {
+        height: 100%;
+        overflow-y: auto;
+    }
+}

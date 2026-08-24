@@ -1,0 +1,15 @@
+@use "variables";
+
+#topography-bg {
+	position: fixed;
+	inset: 0;
+	z-index: -1;
+	pointer-events: none;
+	overflow: hidden;
+	background: variables.$dusty-olive;
+	--contour-color: #{variables.$dusty-taupe};
+
+	canvas {
+		display: block;
+	}
+}

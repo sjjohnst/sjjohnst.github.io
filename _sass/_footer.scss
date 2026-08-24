@@ -1,0 +1,12 @@
+@use "variables";
+
+.watermark {
+    position: fixed;
+    right: variables.$space-sm;
+    bottom: variables.$space-sm;
+    font-size: variables.$font-size-sm;
+    color: variables.$text-muted;
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 10;
+}
