@@ -1,0 +1,40 @@
+@use "variables";
+
+// Shared building blocks for "container"-style components (cards, image
+// frames, nav pills, tabs, ...). Compose these with @include rather than
+// repeating border/shadow/layout rules on each new component.
+
+@mixin container-base {
+    border-radius: variables.$border-radius-sm;
+    transition: all variables.$transition-standard;
+}
+
+@mixin container-bordered($width: 3px, $color: variables.$text-default) {
+    border: $width solid $color;
+}
+
+@mixin container-elevated($shadow: 0 2px 4px rgba(0, 0, 0, 0.15)) {
+    box-shadow: $shadow;
+}
+
+// Hover feedback for interactive containers (buttons, nav pills): a
+// slightly deeper shadow and a subtle lift. Pair with container-elevated
+// for the resting shadow.
+@mixin container-lift($shadow-hover: 0 4px 8px rgba(0, 0, 0, 0.2)) {
+    &:hover {
+        box-shadow: $shadow-hover;
+        transform: translateY(-1px);
+    }
+}
+
+@mixin container-flex-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+@mixin container-flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

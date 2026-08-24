@@ -1,5 +1,6 @@
 @use "sass:color";
 @use "variables";
+@use "containers";
 
 .navbar.is-light {
     background-color: transparent !important;
@@ -51,35 +52,31 @@ a.navbar-item,
 }
 
 a.navbar-item {
+    @include containers.container-base;
+    @include containers.container-elevated(0 4px 6px rgba(0, 0, 0, 0.15));
+    @include containers.container-lift;
     font-size: variables.$font-size-lg;
     padding: 0 variables.$space-lg;
     background-color: variables.$bg-page !important;
     color: variables.$text-default !important;
-    border-radius: variables.$border-radius-sm;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-    transition: all variables.$transition-standard;
 
     &:hover {
         background-color: color.adjust(variables.$bg-page, $lightness: -8%) !important;
         color: variables.$href-link !important;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        transform: translateY(-1px);
     }
 }
 
 .button.is-light {
+    @include containers.container-base;
+    @include containers.container-elevated;
+    @include containers.container-lift;
     background-color: variables.$bg-page !important;
     color: variables.$text-default !important;
     border: none;
-    border-radius: variables.$border-radius-sm;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-    transition: all variables.$transition-standard;
 
     &:hover {
         background-color: color.adjust(variables.$bg-page, $lightness: -8%) !important;
         color: variables.$href-link !important;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        transform: translateY(-1px);
     }
 }
 

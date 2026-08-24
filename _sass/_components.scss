@@ -1,28 +1,27 @@
 @use "sass:color";
 @use "variables";
+@use "containers";
 
-.custom-border {
-    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.24), 0 2px 4px rgba(0, 0, 0, 0.12);
-    border: 3px solid variables.$text-default;
+.text-container {
+    @include containers.container-base;
+    @include containers.container-bordered;
+    @include containers.container-elevated((0 2px 2px rgba(0, 0, 0, 0.24), 0 2px 4px rgba(0, 0, 0, 0.12)));
+    @include containers.container-flex-column;
     padding: variables.$space-2xl;
-    border-radius: variables.$border-radius-sm;
     height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
     background: variables.$bg-page;
 }
 
-.custom-border p {
+.text-container p {
     margin-bottom: variables.$space-lg;
     line-height: variables.$line-height-relaxed;
 }
 
-.custom-border p:last-child {
+.text-container p:last-child {
     margin-bottom: 0;
 }
 
-.custom-border a {
+.text-container a {
     color: variables.$href-link;
     font-weight: variables.$font-weight-semibold;
     text-decoration: none;
@@ -34,23 +33,22 @@
     }
 }
 
-.custom-border ol {
+.text-container ol {
     margin-bottom: variables.$space-xl;
     margin-left: variables.$space-3xl;
 }
 
 .image-container {
-    border: 3px solid variables.$text-default;
-    border-radius: variables.$border-radius-sm;
+    @include containers.container-base;
+    @include containers.container-bordered;
+    @include containers.container-elevated;
+    @include containers.container-flex-center;
     overflow: hidden;
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 @media screen and (min-width: 769px) {
-    .custom-border {
+    .text-container {
         height: 100%;
         overflow-y: auto;
     }
