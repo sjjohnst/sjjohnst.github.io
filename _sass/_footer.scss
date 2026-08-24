@@ -1,14 +1,12 @@
 @use "variables";
 
-.footer {
-    padding: variables.$space-lg variables.$space-lg;
-    background-color: variables.$bg-page;
+.watermark {
+    position: fixed;
+    right: variables.$space-sm;
+    bottom: variables.$space-sm;
+    font-size: variables.$font-size-sm;
     color: variables.$text-muted;
-}
-
-.footer img[alt~="Creative Commons License"] {
-    height: 1.0em;
-    width: auto;
-    vertical-align: bottom;
-    margin-left: variables.$space-sm;
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 10;
 }
