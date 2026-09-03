@@ -1,50 +1,118 @@
+@use "sass:color";
 @use "variables";
 @use "containers";
+@use "collage";
 
-// Homepage hero row: headshot + bio, pulled up toward the header and
-// widened toward the viewport edges.
-.hero-section {
-    padding-top: variables.$space-xs;
-    padding-bottom: variables.$space-xs;
-    padding-left: 0;
-    padding-right: 0;
+// The homepage is a run of full-width colour bands stacked flush inside one
+// centred column. Only the outer corners are rounded, so the run reads as a
+// single sheet rather than a column of floating cards.
+.editorial-stack {
+    @include collage.stack;
+    padding-block: variables.$space-md variables.$space-3xl;
+
+    > section:first-child {
+        border-start-start-radius: variables.$border-radius-xl;
+        border-start-end-radius: variables.$border-radius-xl;
+    }
+
+    > section:last-child {
+        border-end-start-radius: variables.$border-radius-xl;
+        border-end-end-radius: variables.$border-radius-xl;
+    }
 }
 
-.hero-section .container.is-fluid {
-    padding-left: variables.$space-xs;
-    padding-right: variables.$space-xs;
-}
-
-// Full-width rounded "poster block" wrapping the hero row in the deep
-// olive retro palette, with a grain texture and a floating starburst
-// accent in the top-right corner.
-.hero-card {
+// Hero band: headshot on the left, bio set directly on the olive ground.
+.hero-band {
+    @include collage.band(variables.$deep-olive);
     @include containers.container-grain(0.08);
-    position: relative;
-    border-radius: variables.$border-radius-xl;
-    padding: variables.$space-2xl;
-    background: variables.$deep-olive;
 
-    > .columns {
+    > .hero-collage {
         @include containers.container-grain-content;
     }
 }
 
-.hero-card-starburst {
+.hero-band-starburst {
     position: absolute;
     top: variables.$space-xl;
     right: variables.$space-xl;
     width: 4rem;
     height: 4rem;
-    z-index: 2;
+    z-index: variables.$z-badge;
 }
 
-@media screen and (max-width: 768px) {
-    .hero-card {
-        padding: variables.$space-xl;
+// Tops aligned, columns adjacent rather than overlapping — 1/6 ends on the
+// same grid line 6/13 begins on.
+.hero-collage {
+    @include collage.canvas($gap: variables.$space-3xl, $align: start);
+}
+
+.hero-portrait {
+    @include collage.cell(1, 6);
+    @include collage.frame(variables.$border-radius-md);
+
+    > .frame__clip {
+        aspect-ratio: 4 / 5;
+    }
+}
+
+.hero-bio {
+    @include collage.cell(6, 13);
+    color: variables.$warm-cream;
+    font-family: variables.$font-family-mono-retro;
+    font-size: variables.$fs-body-fluid;
+
+    p {
+        margin-bottom: variables.$space-lg;
+        line-height: variables.$line-height-relaxed;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
     }
 
-    .hero-card-starburst {
+    a {
+        color: variables.$mustard-yellow;
+        font-weight: variables.$font-weight-semibold;
+        text-decoration: none;
+        transition: all variables.$transition-standard;
+
+        &:hover {
+            color: variables.$sunlit-clay;
+            text-decoration: underline;
+        }
+    }
+
+    .section-eyebrow {
+        color: variables.$khaki-beige;
+    }
+}
+
+.hero-name {
+    @include collage.display(variables.$fs-display-xl, 700);
+    color: variables.$mustard-yellow;
+    margin-bottom: variables.$space-lg;
+}
+
+.hero-pronouns {
+    font-family: variables.$font-family-mono-retro;
+    font-size: 0.28em;
+    font-weight: variables.$font-weight-normal;
+    letter-spacing: 0;
+    color: variables.$khaki-beige;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+@media screen and (max-width: variables.$bp-tablet) {
+    .hero-collage {
+        @include collage.collapse(variables.$space-xl);
+    }
+
+    .hero-portrait > .frame__clip {
+        aspect-ratio: 4 / 3;
+    }
+
+    .hero-band-starburst {
         width: 2.5rem;
         height: 2.5rem;
         top: variables.$space-lg;

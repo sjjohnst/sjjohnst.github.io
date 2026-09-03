@@ -1,0 +1,130 @@
+@use "variables";
+
+// Layout primitives for the editorial collage rows. Pure mixins, no CSS
+// output — like _containers.scss, this is @use'd by components rather than
+// listed in main.scss. Utility-class versions of the decorative mixins live
+// in _utilities.scss.
+
+// The page column. Bands stack flush inside it; its padding-inline is the
+// gutter that lets the topographic background show down either side.
+@mixin stack {
+    max-width: 1600px;
+    margin-inline: auto;
+    padding-inline: clamp(0rem, 4vw, variables.$space-3xl * 2);
+}
+
+// One full-width horizontal band. Bands butt up against each other with no
+// vertical gap — only the first and last are rounded, so the run reads as a
+// single stacked sheet rather than a column of floating cards.
+@mixin band($bg) {
+    background: $bg;
+    padding-block: clamp(variables.$space-2xl, 6vw, variables.$space-3xl * 2);
+    padding-inline: clamp(variables.$space-lg, 5vw, variables.$space-3xl * 2);
+}
+
+// 12-column canvas. Pieces overlap by claiming overlapping column ranges
+// rather than by nudging with negative margins, so the overlap collapses
+// cleanly at the mobile breakpoint instead of needing to be unwound.
+// minmax(0, 1fr) stops images and long words from blowing a track past its share.
+@mixin canvas($gap: variables.$space-xl, $align: center) {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: $gap;
+    align-items: $align;
+}
+
+// Place a piece on the canvas. Everything lands on row 1 by default so
+// overlapping column ranges actually overlap.
+@mixin cell($start, $end, $z: variables.$z-base) {
+    grid-column: #{$start} / #{$end};
+    grid-row: 1;
+    z-index: $z;
+}
+
+// Pull a piece outward past its parent's padding, so it breaks the card edge.
+// Logical properties keep this correct if the site is ever flipped to RTL
+// (_config.yml already carries a `direction: rtl` key).
+@mixin bleed-out($block: 0, $inline-end: 0, $inline-start: 0) {
+    margin-block: $block;
+    margin-inline: $inline-start $inline-end;
+}
+
+// Tilt through a custom property rather than a bare transform, so hover
+// states can compose with the rotation instead of clobbering it — `transform`
+// is one property, and a plain translateY() on hover snaps a tilted card flat.
+@mixin tilt($deg) {
+    --tilt: #{$deg};
+    transform: rotate(var(--tilt, 0deg));
+}
+
+// Hover lift that survives a tilt. Use in place of containers.container-lift
+// on anything rotated.
+@mixin lift-tilt($shadow-hover: 0 10px 22px rgba(0, 0, 0, 0.25)) {
+    &:hover {
+        box-shadow: $shadow-hover;
+        transform: rotate(var(--tilt, 0deg)) translateY(-3px);
+    }
+}
+
+// Overlay badge pinned to a frame's corner. The parent needs position:
+// relative and must NOT clip its overflow — that is what the frame/clip
+// split below is for.
+@mixin badge-anchor($inline-end: 8%, $block-end: -1.25rem) {
+    position: absolute;
+    inset-inline-end: $inline-end;
+    inset-block-end: $block-end;
+    z-index: variables.$z-badge;
+}
+
+// Media frame that tolerates overlapping children. The rounding and the
+// `overflow: hidden` move onto an inner `.frame__clip`, so a badge parented
+// to the outer frame overhangs the edge instead of being cut off.
+@mixin frame($radius: variables.$border-radius-lg) {
+    position: relative;
+    border-radius: $radius;
+    margin: 0;
+
+    > .frame__clip {
+        border-radius: inherit;
+        overflow: hidden;
+        border: 3px solid variables.$border-retro;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+// Fluid display type with the variable-font axes applied.
+@mixin display($size, $weight: 600) {
+    font-family: variables.$font-family-heading-retro;
+    font-size: $size;
+    font-weight: $weight;
+    font-optical-sizing: auto;
+    font-variation-settings: variables.$display-variation;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+}
+
+// Collapse a canvas to a single stacked column. Every collage row calls this
+// at $bp-tablet; it unwinds the overlaps, break-outs and tilts in one place.
+// $gap is a parameter rather than something callers set alongside the
+// include, because a declaration written after this mixin's nested rule would
+// trip Sass's mixed-decls deprecation.
+@mixin collapse($gap: variables.$space-xl) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: $gap;
+
+    > * {
+        grid-column: 1 / -1;
+        grid-row: auto;
+        margin-block: 0;
+        margin-inline: 0;
+        --tilt: 0deg;
+    }
+}

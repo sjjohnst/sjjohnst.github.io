@@ -1,24 +1,21 @@
 @use "variables";
-@use "containers";
+@use "collage";
 
-// Homepage "Highlights" row: a 3-column grid of cream cards breaking
-// down key focus areas.
-.highlights-section {
-    padding-top: variables.$space-xl;
-    padding-bottom: variables.$space-3xl;
+// Homepage "Highlights" band: three equal columns on the shared grid, tops
+// aligned, no card chrome — the cream ground is the container.
+.highlights-band {
+    @include collage.band(variables.$warm-cream);
+    color: variables.$charcoal;
+}
+
+.highlights-collage {
+    @include collage.canvas($gap: variables.$space-3xl, $align: start);
 }
 
 .highlight-card {
-    @include containers.container-base;
-    @include containers.container-bordered(3px, variables.$border-retro);
-    @include containers.container-elevated;
-    @include containers.container-lift;
-    position: relative;
-    border-radius: variables.$border-radius-lg;
-    padding: variables.$space-xl;
-    height: 100%;
-    background: variables.$warm-cream;
-    color: variables.$charcoal;
+    &:nth-child(1) { @include collage.cell(1, 5); }
+    &:nth-child(2) { @include collage.cell(5, 9); }
+    &:nth-child(3) { @include collage.cell(9, 13); }
 }
 
 .highlight-card-starburst {
@@ -28,19 +25,19 @@
 }
 
 .highlight-title {
-    font-family: variables.$font-family-heading-retro;
-    font-size: variables.$font-size-xl;
+    @include collage.display(variables.$fs-display-md, 600);
     color: variables.$deep-olive;
     margin-bottom: variables.$space-sm;
 }
 
 .highlight-description {
     font-family: variables.$font-family-mono-retro;
+    font-size: variables.$fs-body-fluid;
     line-height: variables.$line-height-relaxed;
 }
 
-@media screen and (max-width: 768px) {
-    .highlight-card {
-        margin-bottom: variables.$space-lg;
+@media screen and (max-width: variables.$bp-tablet) {
+    .highlights-collage {
+        @include collage.collapse(variables.$space-2xl);
     }
 }

@@ -2,7 +2,6 @@
 ---
 @use "variables";
 @use "base";
-@use "utilities";
 @use "components";
 @use "home";
 @use "projects";
@@ -10,3 +9,6 @@
 @use "navbar";
 @use "footer";
 @use "topography";
+// Loaded last so single-class utilities win over component rules of equal
+// specificity (tilt, badge placement, hover lift).
+@use "utilities";

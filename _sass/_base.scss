@@ -1,12 +1,6 @@
 @use "sass:color";
 @use "variables";
 
-html {
-    // Scales everything set in rem (spacing, font sizes) down uniformly,
-    // similar to a browser zoom-out, so the hero row fits without cutoff.
-    font-size: 90%;
-}
-
 html, body {
     height: 100%;
     margin: 0;
@@ -18,6 +12,11 @@ body {
     flex-direction: column;
     min-height: 100vh;
     color: variables.$text-default;
+
+    // Collage pieces use negative margins and rotation, either of which can
+    // push the document wider than the viewport. `clip` rather than `hidden`
+    // so `position: sticky` keeps working.
+    overflow-x: clip;
 }
 
 .title,
@@ -37,10 +36,6 @@ html {
     background-color: variables.$dusty-olive;
 }
 
-.columns.is-vcentered {
-    align-items: stretch !important;
-}
-
-.section {
+.page-main {
     flex-grow: 1;
 }

@@ -1,104 +1,81 @@
 ---
 layout: default
 title: Samuel Johnston
+full_bleed: true
 ---
 
-<section class="section hero-section">
-  <div class="container is-fluid">
-    <div class="hero-card">
-      {% include starburst.html class="hero-card-starburst" %}
-      <div class="columns is-multiline">
-        <!-- Photo column -->
-        <div class="column is-one-third image-column">
-          <div class="image-container">
-            <figure class="image" style="width: 100%; height: 100%;">
-              <img src="{{ site.baseurl }}/assets/images/headshot_2026.jpg"
-                    alt="Photo of me"
-                    style="object-fit: cover; width: 100%; height: 100%;">
-            </figure>
-          </div>
+<div class="editorial-stack">
+  <section class="hero-band">
+    {% include starburst.html class="hero-band-starburst" %}
+    <div class="hero-collage">
+      <figure class="hero-portrait">
+        <div class="frame__clip">
+          <img src="{{ site.baseurl }}/assets/images/headshot_2026.jpg" alt="Photo of me">
         </div>
+      </figure>
 
-        <!-- Combined Name + About Me box -->
-        <div class="column text-column">
-          <div class="text-container">
-            <h1 class="title is-2">
-              Samuel Johnston <span style="font-size: 0.5em;">(he/him)</span>
-            </h1>
-            <p>
-              I'm passionate about earth observation data, and its growing role in environmental action.
-              I enjoy tranforming these large, complex datasets into actionable insights and elegant tools, for the benefit of people and planet.
-              :earth_americas:
-            </p>
+      <div class="hero-bio">
+        <span class="section-eyebrow">Data &middot; Earth Observation</span>
+        <h1 class="hero-name">
+          Samuel Johnston <span class="hero-pronouns">(he/him)</span>
+        </h1>
+        <p>
+          I'm passionate about earth observation data, and its growing role in environmental action.
+          I enjoy tranforming these large, complex datasets into actionable insights and elegant tools, for the benefit of people and planet.
+          :earth_americas:
+        </p>
 
-            <p>
-              Currently I work at <a href="https://www.h2ogeomatics.com/" target="_blank" rel="noopener noreferrer">H2O Geomatics</a>,
-              where I leverage satellite imagery for lake monitoring and modelling, as part of the <a href="https://climate.esa.int/en/projects/lakes/" target="_blank" rel="noopener noreferrer">ESA CCI Lakes</a> project. My projects include:
-            </p>
+        <p>
+          Currently I work at <a href="https://www.h2ogeomatics.com/" target="_blank" rel="noopener noreferrer">H2O Geomatics</a>,
+          where I leverage satellite imagery for lake monitoring and modelling, as part of the <a href="https://climate.esa.int/en/projects/lakes/" target="_blank" rel="noopener noreferrer">ESA CCI Lakes</a> project.
+        </p>
 
-            {%- comment -%} <ol class="ml-3xl">
-              <li>Optimizing data + ML pipelines for satellite-based lake surface monitoring.</li>
-              <li>Developing and deploying deep learning models for cloud gap-filling.</li>
-              <li>Researching spatial-temporal AI forecasting methods for lake ice.</li>
-            </ol> {%- endcomment -%}
+        <p>
+          Outside of work I enjoy rock climbing, sewing and playing the guitar.
+        </p>
 
-            <p>
-              Outside of work I enjoy rock climbing, sewing and playing the guitar.
-            </p>
-
-            <p>
-              You can check out my Resume <a href="{{ site.baseurl }}/assets/files/johnston_samuel_resume_eng.pdf" target="_blank" rel="noopener noreferrer">here</a>.
-            </p>
-          </div>
-        </div>
+        <p>
+          You can check out my Resume <a href="{{ site.baseurl }}/assets/files/johnston_samuel_resume_eng.pdf" target="_blank" rel="noopener noreferrer">here</a>.
+        </p>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-{% assign featured_project = site.data.projects | where: "featured", true | first %}
-{% if featured_project %}
-<section class="section featured-project-section">
-  <div class="container is-fluid">
-    <div class="featured-project-card">
-      <div class="columns is-vcentered is-multiline">
-        <div class="column is-half featured-project-text">
-          <span class="section-eyebrow">Featured Project</span>
-          <h2 class="title is-2 featured-project-title">{{ featured_project.title }}</h2>
-          <p class="featured-project-description">{{ featured_project.description }}</p>
-          <a class="button is-rounded featured-project-cta" href="{{ featured_project.url }}">View Project</a>
-        </div>
-
-        <div class="column is-half featured-project-media">
-          <div class="featured-project-image-frame">
-            {% if featured_project.image %}
-            <img src="{{ site.baseurl }}{{ featured_project.image }}" alt="{{ featured_project.title }} screenshot">
-            {% else %}
-            <div class="featured-project-placeholder">
-              {% include starburst.html class="featured-project-placeholder-icon" %}
-            </div>
-            {% endif %}
-          </div>
-          <span class="badge-pill featured-project-badge">Est. {{ featured_project.date | date: "%Y" }}</span>
-        </div>
+  {% assign featured_project = site.data.projects | where: "featured", true | first %}
+  {% if featured_project %}
+  <section class="featured-band">
+    <div class="featured-collage">
+      <div class="featured-project-text">
+        <span class="section-eyebrow">Featured Project</span>
+        <h2 class="featured-project-title">{{ featured_project.title }}</h2>
+        <p class="featured-project-description">{{ featured_project.description }}</p>
+        <a class="featured-project-cta" href="{{ featured_project.url }}">View Project</a>
       </div>
-    </div>
-  </div>
-</section>
-{% endif %}
 
-<section class="section highlights-section">
-  <div class="container is-fluid">
-    <div class="columns is-multiline">
+      <figure class="featured-project-media">
+        <div class="frame__clip">
+          {% if featured_project.image %}
+          <img src="{{ site.baseurl }}{{ featured_project.image }}" alt="{{ featured_project.title }} screenshot">
+          {% else %}
+          <div class="featured-project-placeholder">
+            {% include starburst.html class="featured-project-placeholder-icon" %}
+          </div>
+          {% endif %}
+        </div>
+      </figure>
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="highlights-band">
+    <div class="highlights-collage">
       {% for item in site.data.highlights %}
-      <div class="column is-one-third">
-        <div class="highlight-card">
-          {% include starburst.html class="highlight-card-starburst" %}
-          <h3 class="highlight-title">{{ item.title }}</h3>
-          <p class="highlight-description">{{ item.description }}</p>
-        </div>
+      <div class="highlight-card">
+        {% include starburst.html class="highlight-card-starburst" %}
+        <h3 class="highlight-title">{{ item.title }}</h3>
+        <p class="highlight-description">{{ item.description }}</p>
       </div>
       {% endfor %}
     </div>
-  </div>
-</section>
+  </section>
+</div>

@@ -1,6 +1,7 @@
 @use "sass:color";
 @use "variables";
 @use "containers";
+@use "collage";
 
 .projects-grid {
     margin-top: variables.$space-2xl;
@@ -41,84 +42,66 @@
     color: color.adjust(variables.$text-muted, $lightness: 12%);
 }
 
-// Homepage "Featured Project" banner: a full-width mustard block with a
-// 2-column layout — title/description/CTA on the left, a framed
-// screenshot with an overlapping badge on the right.
-.featured-project-section {
-    padding-top: variables.$space-2xl;
-    padding-bottom: variables.$space-2xl;
-}
-
-.featured-project-card {
+// Homepage "Featured Project" band: copy on the left, screenshot on the
+// right, split into two equal halves on the shared 12-column grid.
+.featured-band {
+    @include collage.band(variables.$dusty-taupe);
     @include containers.container-grain(0.08);
-    border-radius: variables.$border-radius-xl;
-    padding: variables.$space-2xl;
-    background: variables.$dusty-taupe;
 
-    > .columns {
+    > .featured-collage {
         @include containers.container-grain-content;
     }
 }
 
+.featured-collage {
+    @include collage.canvas($gap: variables.$space-3xl, $align: start);
+}
+
 .featured-project-text {
+    @include collage.cell(1, 7);
     color: variables.$charcoal;
 }
 
-.section-eyebrow {
-    display: block;
-    font-family: variables.$font-family-mono-retro;
-    font-size: variables.$font-size-sm;
-    font-weight: variables.$font-weight-semibold;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: variables.$space-sm;
-}
-
 .featured-project-title {
-    font-family: variables.$font-family-heading-retro;
-    color: variables.$charcoal !important;
+    @include collage.display(variables.$fs-display-lg, 600);
+    color: variables.$charcoal;
     margin-bottom: variables.$space-md;
 }
 
 .featured-project-description {
     font-family: variables.$font-family-mono-retro;
+    font-size: variables.$fs-body-fluid;
     line-height: variables.$line-height-relaxed;
     margin-bottom: variables.$space-xl;
 }
 
 .featured-project-cta {
     @include containers.container-lift;
+    display: inline-flex;
+    align-items: center;
     border-radius: 999px;
     border: 2px solid variables.$charcoal;
     padding: 0 variables.$space-xl;
     height: 2.75rem;
-    background: variables.$charcoal !important;
-    color: variables.$warm-cream !important;
+    background: variables.$charcoal;
+    color: variables.$warm-cream;
     font-family: variables.$font-family-mono-retro;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    text-decoration: none;
 
     &:hover {
-        background: variables.$deep-olive !important;
+        background: variables.$deep-olive;
+        color: variables.$warm-cream;
     }
 }
 
 .featured-project-media {
-    position: relative;
-}
+    @include collage.cell(7, 13);
+    @include collage.frame(variables.$border-radius-md);
 
-.featured-project-image-frame {
-    @include containers.container-bordered(3px, variables.$border-retro);
-    border-radius: 20px;
-    overflow: hidden;
-    aspect-ratio: 4 / 3;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-
-    img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
+    > .frame__clip {
+        aspect-ratio: 4 / 3;
     }
 }
 
@@ -135,19 +118,12 @@
     color: variables.$warm-cream;
 }
 
-.featured-project-badge {
-    position: absolute;
-    right: variables.$space-lg;
-    bottom: -1.25rem;
-    transform: rotate(-6deg);
-}
-
-@media screen and (max-width: 768px) {
-    .featured-project-card {
-        padding: variables.$space-xl;
+@media screen and (max-width: variables.$bp-tablet) {
+    .featured-collage {
+        @include collage.collapse(variables.$space-xl);
     }
 
-    .featured-project-media {
-        margin-top: variables.$space-xl;
+    .featured-project-media > .frame__clip {
+        aspect-ratio: 3 / 2;
     }
 }

@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="/assets/css/main.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Fraunces requests the full opsz/wght ranges plus the SOFT and WONK
+         axes driven by $display-variation in _sass/_variables.scss. -->
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Fraunces:opsz,wght,SOFT,WONK@9..144,400..700,0..100,0..1&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" sizes="96x96" href="/assets/favicon-package/favicon-96x96.png">
     <link rel="icon" href="/assets/favicon-package/favicon.svg" type="image/svg+xml" sizes="any">
     <link rel="icon" href="/assets/favicon-package/favicon.ico">
@@ -82,11 +84,17 @@
       </div>
     </nav>
     <!-- Content -->
-    <section class="section">
-      <div class="container">
+    <main class="page-main">
+      {%- if page.full_bleed -%}
         {{ content }}
-      </div>
-    </section>
+      {%- else -%}
+        <section class="section">
+          <div class="container">
+            {{ content }}
+          </div>
+        </section>
+      {%- endif -%}
+    </main>
     {%- comment -%} <!-- Watermark -->
     <div class="watermark">&copy; {{ 'now' | date: '%Y' }} Samuel Johnston</div> {%- endcomment -%}
   </body>

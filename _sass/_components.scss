@@ -1,70 +1,9 @@
-@use "sass:color";
 @use "variables";
 @use "containers";
 
-.text-container {
-    @include containers.container-base;
-    @include containers.container-bordered(3px, variables.$border-retro);
-    @include containers.container-elevated((0 2px 2px rgba(0, 0, 0, 0.24), 0 2px 4px rgba(0, 0, 0, 0.12)));
-    @include containers.container-flex-column;
-    border-radius: variables.$border-radius-lg;
-    padding: variables.$space-xl;
-    height: 100%;
-    background: variables.$warm-cream;
-    color: variables.$charcoal;
-    font-family: variables.$font-family-mono-retro;
-}
-
-.text-container .title {
-    font-family: variables.$font-family-heading-retro;
-    color: variables.$deep-olive;
-}
-
-.text-container p {
-    margin-bottom: variables.$space-lg;
-    line-height: variables.$line-height-relaxed;
-}
-
-.text-container p:last-child {
-    margin-bottom: 0;
-}
-
-.text-container a {
-    color: variables.$href-link;
-    font-weight: variables.$font-weight-semibold;
-    text-decoration: none;
-    transition: all variables.$transition-standard;
-
-    &:hover {
-        color: color.adjust(variables.$href-link, $lightness: -15%);
-        text-decoration: underline;
-    }
-}
-
-.text-container ol {
-    margin-bottom: variables.$space-xl;
-    margin-left: variables.$space-3xl;
-}
-
-.image-container {
-    @include containers.container-base;
-    @include containers.container-bordered(3px, variables.$border-retro);
-    @include containers.container-elevated;
-    @include containers.container-flex-center;
-    border-radius: variables.$border-radius-lg;
-    overflow: hidden;
-    height: 100%;
-}
-
-@media screen and (min-width: 769px) {
-    .text-container {
-        height: 100%;
-        overflow-y: auto;
-    }
-}
-
 // Retro decorative primitives, shared across the hero/featured/highlights
-// rows: a floating rounded "seal" badge and a spiky sun/starburst icon.
+// rows: a floating rounded "seal" badge, a spiky sun/starburst icon, and the
+// small uppercase kicker that labels each collage row.
 .badge-pill {
     @include containers.pill-badge;
 }
@@ -73,4 +12,14 @@
     width: 3rem;
     height: 3rem;
     color: variables.$mustard-yellow;
+}
+
+.section-eyebrow {
+    display: block;
+    font-family: variables.$font-family-mono-retro;
+    font-size: variables.$fs-eyebrow;
+    font-weight: variables.$font-weight-semibold;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: variables.$space-sm;
 }
