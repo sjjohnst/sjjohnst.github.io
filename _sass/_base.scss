@@ -36,6 +36,9 @@ html {
     background-color: variables.$dusty-olive;
 }
 
+// Column so the final band can grow into any leftover viewport height.
 .page-main {
+    display: flex;
+    flex-direction: column;
     flex-grow: 1;
 }

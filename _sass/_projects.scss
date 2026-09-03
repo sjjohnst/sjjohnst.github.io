@@ -42,8 +42,8 @@
     color: color.adjust(variables.$text-muted, $lightness: 12%);
 }
 
-// Homepage "Featured Project" band: copy on the left, screenshot on the
-// right, split into two equal halves on the shared 12-column grid.
+// Homepage "Featured Project" band: edge to edge, copy on the left and
+// screenshot on the right, split into two equal halves on the shared grid.
 .featured-band {
     @include collage.band(variables.$dusty-taupe);
     @include containers.container-grain(0.08);
@@ -54,6 +54,7 @@
 }
 
 .featured-collage {
+    @include collage.band-inner;
     @include collage.canvas($gap: variables.$space-3xl, $align: start);
 }
 

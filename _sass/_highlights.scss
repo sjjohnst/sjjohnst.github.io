@@ -1,14 +1,18 @@
 @use "variables";
 @use "collage";
 
-// Homepage "Highlights" band: three equal columns on the shared grid, tops
-// aligned, no card chrome — the cream ground is the container.
+// Homepage "Highlights" band: edge to edge, three equal columns on the shared
+// grid, tops aligned, no card chrome — the cream ground is the container.
+// Grows to fill any leftover viewport height so the topographic background
+// never reappears below the final band on a short page.
 .highlights-band {
     @include collage.band(variables.$warm-cream);
+    flex-grow: 1;
     color: variables.$charcoal;
 }
 
 .highlights-collage {
+    @include collage.band-inner;
     @include collage.canvas($gap: variables.$space-3xl, $align: start);
 }
 

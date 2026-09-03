@@ -4,9 +4,9 @@ title: Samuel Johnston
 full_bleed: true
 ---
 
-<div class="editorial-stack">
+<!-- Floating panel: the only place the topographic background shows through. -->
+<div class="hero-frame">
   <section class="hero-band">
-    {% include starburst.html class="hero-band-starburst" %}
     <div class="hero-collage">
       <figure class="hero-portrait">
         <div class="frame__clip">
@@ -40,42 +40,44 @@ full_bleed: true
       </div>
     </div>
   </section>
+</div>
 
-  {% assign featured_project = site.data.projects | where: "featured", true | first %}
-  {% if featured_project %}
-  <section class="featured-band">
-    <div class="featured-collage">
-      <div class="featured-project-text">
-        <span class="section-eyebrow">Featured Project</span>
-        <h2 class="featured-project-title">{{ featured_project.title }}</h2>
-        <p class="featured-project-description">{{ featured_project.description }}</p>
-        <a class="featured-project-cta" href="{{ featured_project.url }}">View Project</a>
-      </div>
+<!-- Edge-to-edge bands, flush against each other and the viewport. -->
+{% assign featured_project = site.data.projects | where: "featured", true | first %}
+{% if featured_project %}
+<section class="featured-band">
+  <div class="featured-collage">
+    <div class="featured-project-text">
+      <span class="section-eyebrow">Featured Project</span>
+      <h2 class="featured-project-title">{{ featured_project.title }}</h2>
+      <p class="featured-project-description">{{ featured_project.description }}</p>
+      <a class="featured-project-cta" href="{{ featured_project.url }}">View Project</a>
+    </div>
 
-      <figure class="featured-project-media">
-        <div class="frame__clip">
-          {% if featured_project.image %}
-          <img src="{{ site.baseurl }}{{ featured_project.image }}" alt="{{ featured_project.title }} screenshot">
-          {% else %}
-          <div class="featured-project-placeholder">
-            {% include starburst.html class="featured-project-placeholder-icon" %}
-          </div>
-          {% endif %}
+    <figure class="featured-project-media">
+      <div class="frame__clip">
+        {% if featured_project.image %}
+        <img src="{{ site.baseurl }}{{ featured_project.image }}" alt="{{ featured_project.title }} screenshot">
+        {% else %}
+        <div class="featured-project-placeholder">
+          {% include starburst.html class="featured-project-placeholder-icon" %}
         </div>
-      </figure>
-    </div>
-  </section>
-  {% endif %}
-
-  <section class="highlights-band">
-    <div class="highlights-collage">
-      {% for item in site.data.highlights %}
-      <div class="highlight-card">
-        {% include starburst.html class="highlight-card-starburst" %}
-        <h3 class="highlight-title">{{ item.title }}</h3>
-        <p class="highlight-description">{{ item.description }}</p>
+        {% endif %}
       </div>
-      {% endfor %}
+    </figure>
+  </div>
+</section>
+{% endif %}
+
+<section class="highlights-band">
+  <div class="highlights-collage">
+    {% for item in site.data.highlights %}
+    <div class="highlight-card">
+      {% include starburst.html class="highlight-card-starburst" %}
+      <h3 class="highlight-title">{{ item.title }}</h3>
+      <p class="highlight-description">{{ item.description }}</p>
     </div>
-  </section>
+    {% endfor %}
+  </div>
+</section>
 </div>

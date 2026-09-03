@@ -1,13 +1,7 @@
 @use "variables";
-@use "containers";
 
-// Retro decorative primitives, shared across the hero/featured/highlights
-// rows: a floating rounded "seal" badge, a spiky sun/starburst icon, and the
-// small uppercase kicker that labels each collage row.
-.badge-pill {
-    @include containers.pill-badge;
-}
-
+// Retro decorative primitives shared across the bands: a spiky sun/starburst
+// icon, and the small uppercase kicker that labels each row.
 .starburst {
     width: 3rem;
     height: 3rem;

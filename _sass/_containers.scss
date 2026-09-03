@@ -9,10 +9,6 @@
     transition: all variables.$transition-standard;
 }
 
-@mixin container-bordered($width: 3px, $color: variables.$text-default) {
-    border: $width solid $color;
-}
-
 @mixin container-elevated($shadow: 0 2px 4px rgba(0, 0, 0, 0.15)) {
     box-shadow: $shadow;
 }
@@ -25,12 +21,6 @@
         box-shadow: $shadow-hover;
         transform: translateY(-1px);
     }
-}
-
-@mixin container-flex-column {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
 }
 
 @mixin container-flex-center {
@@ -50,7 +40,7 @@
         content: "";
         position: absolute;
         inset: 0;
-        z-index: 1;
+        z-index: variables.$z-grain;
         pointer-events: none;
         border-radius: inherit;
         opacity: $opacity;
@@ -63,25 +53,5 @@
 // Ensures direct children stack above the grain overlay's ::after.
 @mixin container-grain-content {
     position: relative;
-    z-index: 2;
-}
-
-// Rounded, bordered "floating badge" pill — used for corner tags like
-// retro stamp/seal accents overlapping a container's edge.
-@mixin pill-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 999px;
-    border: 2px solid variables.$border-retro;
-    padding: variables.$space-xs variables.$space-lg;
-    font-family: variables.$font-family-mono-retro;
-    font-size: variables.$font-size-sm;
-    font-weight: variables.$font-weight-semibold;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    background: variables.$warm-cream;
-    color: variables.$charcoal;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    white-space: nowrap;
+    z-index: variables.$z-base;
 }
