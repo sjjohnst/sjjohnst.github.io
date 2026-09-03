@@ -14,28 +14,13 @@ full_bleed: true
         </div>
       </figure>
 
-      <div class="hero-bio">
-        <span class="section-eyebrow">Data &middot; Earth Observation</span>
+      <div class="hero-intro">
+        <span class="section-eyebrow"> Geospatial Software Developer </span>
         <h1 class="hero-name">
           Samuel Johnston <span class="hero-pronouns">(he/him)</span>
         </h1>
-        <p>
-          I'm passionate about earth observation data, and its growing role in environmental action.
-          I enjoy tranforming these large, complex datasets into actionable insights and elegant tools, for the benefit of people and planet.
-          :earth_americas:
-        </p>
-
-        <p>
-          Currently I work at <a href="https://www.h2ogeomatics.com/" target="_blank" rel="noopener noreferrer">H2O Geomatics</a>,
-          where I leverage satellite imagery for lake monitoring and modelling, as part of the <a href="https://climate.esa.int/en/projects/lakes/" target="_blank" rel="noopener noreferrer">ESA CCI Lakes</a> project.
-        </p>
-
-        <p>
-          Outside of work I enjoy rock climbing, sewing and playing the guitar.
-        </p>
-
-        <p>
-          You can check out my Resume <a href="{{ site.baseurl }}/assets/files/johnston_samuel_resume_eng.pdf" target="_blank" rel="noopener noreferrer">here</a>.
+        <p class="hero-tagline">
+          Turning satellite imagery into tools for environmental action.
         </p>
       </div>
     </div>
@@ -43,6 +28,34 @@ full_bleed: true
 </div>
 
 <!-- Edge-to-edge bands, flush against each other and the viewport. -->
+<section class="about-band">
+  <div class="about-collage">
+    <div class="about-heading">
+      <h2 class="about-title">About Me</h2>
+    </div>
+
+    <div class="about-body">
+      <p>
+        I'm passionate about earth observation data, and its growing role in environmental action.
+        I enjoy tranforming these large, complex datasets into actionable insights and elegant tools, for the benefit of people and planet.
+        :earth_americas:
+      </p>
+
+      <p>
+        Currently I work at <a href="https://www.h2ogeomatics.com/" target="_blank" rel="noopener noreferrer">H2O Geomatics</a>,
+        where I leverage satellite imagery for lake monitoring and modelling, as part of the <a href="https://climate.esa.int/en/projects/lakes/" target="_blank" rel="noopener noreferrer">ESA CCI Lakes</a> project.
+      </p>
+
+      <p>
+        Outside of work I enjoy rock climbing, sewing and playing the guitar.
+      </p>
+
+      <p>
+        You can check out my Resume <a href="{{ site.baseurl }}/assets/files/johnston_samuel_resume_eng.pdf" target="_blank" rel="noopener noreferrer">here</a>.
+      </p>
+    </div>
+  </div>
+</section>
 {% assign featured_project = site.data.projects | where: "featured", true | first %}
 {% if featured_project %}
 <section class="featured-band">

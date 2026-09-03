@@ -1,0 +1,61 @@
+@use "sass:color";
+@use "variables";
+@use "collage";
+
+// "About Me" band: first of the edge-to-edge run, sitting between the hero
+// panel's deep olive and the featured band's taupe. A hanging header on the
+// left, body copy on the right held to a readable measure.
+.about-band {
+    @include collage.band(variables.$palm-leaf);
+    color: variables.$charcoal;
+}
+
+// Columns 1-4 and 6-12: column 5 is left empty as a gutter, which is what
+// gives the header its hanging, editorial set.
+.about-collage {
+    @include collage.band-inner;
+    @include collage.canvas($gap: variables.$space-3xl, $align: start);
+}
+
+.about-heading {
+    @include collage.cell(1, 5);
+}
+
+.about-title {
+    @include collage.display(variables.$fs-display-lg, 600);
+    color: variables.$deep-olive;
+    margin: 0;
+}
+
+.about-body {
+    @include collage.cell(6, 13);
+    font-family: variables.$font-family-mono-retro;
+    font-size: variables.$fs-body-fluid;
+
+    p {
+        margin-bottom: variables.$space-lg;
+        line-height: variables.$line-height-relaxed;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+    a {
+        color: variables.$href-link;
+        font-weight: variables.$font-weight-semibold;
+        text-decoration: none;
+        transition: all variables.$transition-standard;
+
+        &:hover {
+            color: color.adjust(variables.$href-link, $lightness: -15%);
+            text-decoration: underline;
+        }
+    }
+}
+
+@media screen and (max-width: variables.$bp-tablet) {
+    .about-collage {
+        @include collage.collapse(variables.$space-lg);
+    }
+}
