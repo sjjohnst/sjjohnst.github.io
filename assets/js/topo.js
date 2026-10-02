@@ -10,7 +10,7 @@ function contourColor(el) {
 }
 
 function init(mount) {
-  const pixelRatio = Math.min(window.devicePixelRatio, config.render.pixelRatioCap);
+  let pixelRatio = Math.min(window.devicePixelRatio, config.render.pixelRatioCap);
 
   const scene = new THREE.Scene();
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, -1, 1);
@@ -109,12 +109,11 @@ function init(mount) {
   resize();
   window.addEventListener("resize", resize);
 
-  const minFrameTime = 1000 / config.render.fps;
   let lastRender = 0;
 
   function frame(now) {
     requestAnimationFrame(frame);
-    if (now - lastRender < minFrameTime) return;
+    if (now - lastRender < 1000 / config.render.fps) return;
     lastRender = now;
 
     material.uniforms.time.value = now / 1000;
@@ -126,8 +125,33 @@ function init(mount) {
   } else {
     renderer.render(scene, camera);
   }
+
+  // Apply an edited config to the running animation (used by topo.debug.js).
+  function update() {
+    const recompile =
+      material.defines.BASE_OCTAVES !== config.terrain.octaves ||
+      material.defines.RIDGE_OCTAVES !== config.ridges.octaves;
+    syncConfig();
+    if (recompile) material.needsUpdate = true;
+
+    const ratio = Math.min(window.devicePixelRatio, config.render.pixelRatioCap);
+    if (ratio !== pixelRatio) {
+      pixelRatio = ratio;
+      renderer.setPixelRatio(ratio);
+      material.uniforms.pixelRatio.value = ratio;
+      resize();
+    }
+    if (reducedMotion.matches) renderer.render(scene, camera);
+  }
+
+  return update;
 }
 
 if (container) {
-  init(container);
+  const update = init(container);
+
+  // Tuning panel: dev server only, never loaded for visitors.
+  if (["localhost", "127.0.0.1"].includes(location.hostname)) {
+    import("./topo.debug.js").then((m) => m.default(config, update));
+  }
 }
