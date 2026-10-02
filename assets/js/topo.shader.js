@@ -46,14 +46,44 @@ export const snoise2D = `
   }
 `;
 
+// Every uniform below is driven by topo.config.js (see syncConfig in topo.js).
+// BASE_OCTAVES and RIDGE_OCTAVES are loop bounds, so they are #defines
+// supplied by the material rather than uniforms.
 export const fragmentShader = `
   uniform vec3 color;
   uniform float time;
   uniform vec2 resolution;
   uniform float pixelRatio;
 
-  #define BASE_OCTAVES 4
-  #define RIDGE_OCTAVES 3
+  // terrain
+  uniform float terrainScale;
+  uniform float terrainLacunarity;
+  uniform float terrainGain;
+  uniform vec2 terrainDrift;
+  uniform float contrast;
+  // ridges
+  uniform float ridgeScale;
+  uniform float ridgeStrength;
+  uniform float ridgeLacunarity;
+  uniform float ridgeGain;
+  uniform vec2 ridgeDrift;
+  uniform float maskFloor;
+  uniform vec2 maskRange;
+  // warp
+  uniform float warpScale;
+  uniform float warpStrength;
+  uniform vec2 warpDrift;
+  // motion
+  uniform vec2 pan;
+  uniform float contourDrift;
+  // lines
+  uniform float levels;
+  uniform float indexEvery;
+  uniform vec2 lineWidth;      // x: normal, y: index
+  uniform vec2 lineOpacity;    // x: normal, y: index
+  uniform vec2 steepFade;      // gradient range where lines fade out
+  uniform vec2 washRange;      // gradient range where the wash fades in
+  uniform float washOpacity;
 
   const mat2 ROT = mat2(0.80, 0.60, -0.60, 0.80);
 
@@ -64,13 +94,13 @@ export const fragmentShader = `
     float amp = 0.5;
     float sum = 0.0;
     float norm = 0.0;
-    vec2 drift = vec2(0.030, 0.012);
+    vec2 drift = terrainDrift;
     for (int i = 0; i < BASE_OCTAVES; i++) {
       sum += amp * snoise(p + drift * time);
       norm += amp;
-      p = ROT * p * 2.05;
+      p = ROT * p * terrainLacunarity;
       drift = ROT * drift * -0.7;
-      amp *= 0.50;
+      amp *= terrainGain;
     }
     return sum / norm;
   }
@@ -80,7 +110,7 @@ export const fragmentShader = `
     float sum = 0.0;
     float norm = 0.0;
     float weight = 1.0;
-    vec2 drift = vec2(-0.018, 0.021);
+    vec2 drift = ridgeDrift;
     for (int i = 0; i < RIDGE_OCTAVES; i++) {
       float n = 1.0 - abs(snoise(p + drift * time));
       n *= n;
@@ -88,9 +118,9 @@ export const fragmentShader = `
       weight = clamp(n * 2.0, 0.0, 1.0);
       sum += amp * n;
       norm += amp;
-      p = ROT * p * 2.15;
+      p = ROT * p * ridgeLacunarity;
       drift = ROT * drift * -0.7;
-      amp *= 0.48;
+      amp *= ridgeGain;
     }
     return sum / norm;
   }
@@ -98,52 +128,49 @@ export const fragmentShader = `
   float elevation(vec2 q) {
     // Only a hint of bulk pan -- the flow comes from the per-octave drift and
     // the warp below, not from sliding the whole landscape past the viewport.
-    vec2 p = q + vec2(time * 0.007, time * 0.0035);
+    vec2 p = q + pan * time;
 
     // Subtle domain warp, moving on its own heading so it flows across the base
     // field rather than travelling with it.
-    vec2 w = p * 1.2 + vec2(time * 0.05, time * -0.03);
-    p += vec2(snoise(w), snoise(w + vec2(13.4, 7.1))) * 0.18;
+    vec2 w = p * warpScale + warpDrift * time;
+    p += vec2(snoise(w), snoise(w + vec2(13.4, 7.1))) * warpStrength;
 
     float base = fbm(p) * 0.5 + 0.5;
-    float crests = ridge(p * 1.5 + vec2(5.2, 1.3));
+    float crests = ridge(p * ridgeScale + vec2(5.2, 1.3));
 
     // Floor the mask so low country keeps some roughness; at zero there was a
     // visible seam between rough high ground and smooth basins.
-    float mask = 0.25 + 0.75 * smoothstep(0.30, 0.75, base);
-    float h = clamp(base * 0.65 + crests * 0.35 * mask, 0.0, 1.0);
+    float mask = maskFloor + (1.0 - maskFloor) * smoothstep(maskRange.x, maskRange.y, base);
+    float h = clamp(base * (1.0 - ridgeStrength) + crests * ridgeStrength * mask, 0.0, 1.0);
 
-    return pow(h, 1.1);
+    return pow(h, contrast);
   }
 
   void main() {
-    const float levels = 24.0;
-    const float indexEvery = 5.0;
-
     // Centred origin, but scaled in CSS pixels: feature size and contour
     // spacing then stay constant across viewports instead of the whole
     // landscape zooming to fit the short edge (which crushed it on phones).
     vec2 st = (gl_FragCoord.xy - 0.5 * resolution.xy) / pixelRatio;
-    vec2 q = st * 0.0035;
+    vec2 q = st * terrainScale;
 
     // Drifting the band coordinate itself walks every contour across the
     // slopes: rings collapse into peaks and vanish, new ones open in the
     // basins. Costs one add and does most of the work of making this feel
     // alive. Kept slow -- it also cycles which lines count as index contours
     // below, and that wants to read as ambient rather than as a flicker.
-    float e = elevation(q) * levels + time * 0.05;
+    float e = elevation(q) * levels + time * contourDrift;
 
     // Screen-space anti-aliased line rendering
     float g = max(length(vec2(dFdx(e), dFdy(e))), 1e-5);
     float d = abs(fract(e - 0.5) - 0.5) / g;
 
     float isIndex = 1.0 - step(0.5, mod(floor(e + 0.5), indexEvery));
-    float halfWidth = mix(0.45, 0.85, isIndex);
+    float halfWidth = mix(lineWidth.x, lineWidth.y, isIndex);
     float line = 1.0 - smoothstep(halfWidth - 0.5, halfWidth + 0.5, d);
-    line *= mix(0.70, 1.0, isIndex);
+    line *= mix(lineOpacity.x, lineOpacity.y, isIndex);
 
-    line *= 1.0 - smoothstep(0.40, 0.85, g);
-    float wash = smoothstep(0.45, 0.95, g) * 0.25;
+    line *= 1.0 - smoothstep(steepFade.x, steepFade.y, g);
+    float wash = smoothstep(washRange.x, washRange.y, g) * washOpacity;
 
     float alpha = max(line, wash);
     if (alpha < 0.004) discard;
