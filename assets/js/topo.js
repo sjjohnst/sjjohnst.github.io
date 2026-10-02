@@ -4,7 +4,7 @@ const container = document.getElementById("topography-bg");
 
 function contourColor(el) {
   const css = getComputedStyle(el).getPropertyValue("--contour-color").trim();
-  return new THREE.Color(css);
+  return new THREE.Color(css || "#ffffff");
 }
 
 const vs = `
@@ -13,120 +13,161 @@ const vs = `
   }
 `;
 
-const fs = `
-  uniform vec3 color;
-  uniform float time;
-  uniform float pixelRatio;
-
-  void main() {
-    float levels = 12.0; // Number of distinct "bands" you want
-
-    // gl_FragCoord is in physical pixels, so divide out the device pixel ratio
-    // to keep the contours the same visual size on every display.
-    vec2 p = gl_FragCoord.xy / pixelRatio;
-
-    float noise = snoise(vec3(p * 0.003, time * 0.012)); // Noise value
-    noise = (noise + 1.0) / 2.0; // Normalize it
-
-    // We want to posterize + detect edges
-    float lower = floor(noise * levels) / levels; // Find the lower band/level the noise matches at
-    float lowerDiff = noise - lower; // and find the difference
-
-    // if the difference between the lower level is within some range, paint the fragment, otherwise ignore it
-    if (lowerDiff > 0.005)
-      discard;
-
-    gl_FragColor = vec4(color, 1.0);
-  }
-`;
-
-const snoise = `
+// 2D simplex noise: three corner gradients and a single permute chain, against
+// four corners and a three-deep chain for the 3D variant this replaced.
+const snoise2D = `
   //
-  // Description : Array and textureless GLSL 2D/3D/4D simplex
-  //               noise functions.
+  // Description : Array and textureless GLSL 2D simplex noise function.
   //      Author : Ian McEwan, Ashima Arts.
   //  Maintainer : stegu
-  //     Lastmod : 20201014 (stegu)
   //     License : Copyright (C) 2011 Ashima Arts. All rights reserved.
-  //               Distributed under the MIT License. See LICENSE file.
+  //               Distributed under the MIT License.
   //               https://github.com/ashima/webgl-noise
   //               https://github.com/stegu/webgl-noise
   //
 
-  vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-  vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+  vec3 permute(vec3 x) { return mod(((x*34.0)+10.0)*x, 289.0); }
 
-  vec4 permute(vec4 x) { return mod289(((x*34.0)+10.0)*x); }
+  float snoise(vec2 v) {
+    const vec4 C = vec4(0.211324865405187, 0.366025403784439,
+                       -0.577350269189626, 0.024390243902439);
+    vec2 i  = floor(v + dot(v, C.yy) );
+    vec2 x0 = v -   i + dot(i, C.xx);
+    vec2 i1;
+    i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+    vec4 x12 = x0.xyxy + C.xxzz;
+    x12.xy -= i1;
+    i = mod(i, 289.0);
+    vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
+      + i.x + vec3(0.0, i1.x, 1.0 ));
+    vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+    m = m*m ;
+    m = m*m ;
+    vec3 x = 2.0 * fract(p * C.www) - 1.0;
+    vec3 h = abs(x) - 0.5;
+    vec3 ox = floor(x + 0.5);
+    vec3 a0 = x - ox;
+    m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );
+    vec3 g;
+    g.x  = a0.x  * x0.x  + h.x  * x0.y;
+    g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+    return 130.0 * dot(m, g);
+  }
+`;
 
-  vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+const fs = `
+  uniform vec3 color;
+  uniform float time;
+  uniform vec2 resolution;
+  uniform float pixelRatio;
 
-  float snoise(vec3 v) {
-    const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;
-    const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);
+  #define BASE_OCTAVES 4
+  #define RIDGE_OCTAVES 3
 
-    vec3 i  = floor(v + dot(v, C.yyy) );
-    vec3 x0 =   v - i + dot(i, C.xxx) ;
+  const mat2 ROT = mat2(0.80, 0.60, -0.60, 0.80);
 
-    vec3 g = step(x0.yzx, x0.xyz);
-    vec3 l = 1.0 - g;
-    vec3 i1 = min( g.xyz, l.zxy );
-    vec3 i2 = max( g.xyz, l.zxy );
+  // Each octave gets its own drift velocity, so they slide across one another
+  // rather than in lockstep. That is what makes the field genuinely change
+  // shape over time -- a single shared offset would only translate the image.
+  float fbm(vec2 p) {
+    float amp = 0.5;
+    float sum = 0.0;
+    float norm = 0.0;
+    vec2 drift = vec2(0.030, 0.012);
+    for (int i = 0; i < BASE_OCTAVES; i++) {
+      sum += amp * snoise(p + drift * time);
+      norm += amp;
+      p = ROT * p * 2.05;
+      drift = ROT * drift * -0.7;
+      amp *= 0.50;
+    }
+    return sum / norm;
+  }
 
-    vec3 x1 = x0 - i1 + C.xxx;
-    vec3 x2 = x0 - i2 + C.yyy;
-    vec3 x3 = x0 - D.yyy;
+  float ridge(vec2 p) {
+    float amp = 0.5;
+    float sum = 0.0;
+    float norm = 0.0;
+    float weight = 1.0;
+    vec2 drift = vec2(-0.018, 0.021);
+    for (int i = 0; i < RIDGE_OCTAVES; i++) {
+      float n = 1.0 - abs(snoise(p + drift * time));
+      n *= n;
+      n *= weight;
+      weight = clamp(n * 2.0, 0.0, 1.0);
+      sum += amp * n;
+      norm += amp;
+      p = ROT * p * 2.15;
+      drift = ROT * drift * -0.7;
+      amp *= 0.48;
+    }
+    return sum / norm;
+  }
 
-    i = mod289(i);
-    vec4 p = permute( permute( permute( i.z + vec4(0.0, i1.z, i2.z, 1.0 )) + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));
+  float elevation(vec2 q) {
+    // Only a hint of bulk pan -- the flow comes from the per-octave drift and
+    // the warp below, not from sliding the whole landscape past the viewport.
+    vec2 p = q + vec2(time * 0.007, time * 0.0035);
 
-    float n_ = 0.142857142857;
-    vec3  ns = n_ * D.wyz - D.xzx;
+    // Subtle domain warp, moving on its own heading so it flows across the base
+    // field rather than travelling with it.
+    vec2 w = p * 1.2 + vec2(time * 0.05, time * -0.03);
+    p += vec2(snoise(w), snoise(w + vec2(13.4, 7.1))) * 0.18;
 
-    vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+    float base = fbm(p) * 0.5 + 0.5;
+    float crests = ridge(p * 1.5 + vec2(5.2, 1.3));
 
-    vec4 x_ = floor(j * ns.z);
-    vec4 y_ = floor(j - 7.0 * x_ );
+    // Floor the mask so low country keeps some roughness; at zero there was a
+    // visible seam between rough high ground and smooth basins.
+    float mask = 0.25 + 0.75 * smoothstep(0.30, 0.75, base);
+    float h = clamp(base * 0.65 + crests * 0.35 * mask, 0.0, 1.0);
 
-    vec4 x = x_ *ns.x + ns.yyyy;
-    vec4 y = y_ *ns.x + ns.yyyy;
-    vec4 h = 1.0 - abs(x) - abs(y);
+    return pow(h, 1.1);
+  }
 
-    vec4 b0 = vec4( x.xy, y.xy );
-    vec4 b1 = vec4( x.zw, y.zw );
+  void main() {
+    const float levels = 24.0;
+    const float indexEvery = 5.0;
 
-    vec4 s0 = floor(b0)*2.0 + 1.0;
-    vec4 s1 = floor(b1)*2.0 + 1.0;
-    vec4 sh = -step(h, vec4(0.0));
+    // Centred origin, but scaled in CSS pixels: feature size and contour
+    // spacing then stay constant across viewports instead of the whole
+    // landscape zooming to fit the short edge (which crushed it on phones).
+    vec2 st = (gl_FragCoord.xy - 0.5 * resolution.xy) / pixelRatio;
+    vec2 q = st * 0.0035;
 
-    vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;
-    vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;
+    // Drifting the band coordinate itself walks every contour across the
+    // slopes: rings collapse into peaks and vanish, new ones open in the
+    // basins. Costs one add and does most of the work of making this feel
+    // alive. Kept slow -- it also cycles which lines count as index contours
+    // below, and that wants to read as ambient rather than as a flicker.
+    float e = elevation(q) * levels + time * 0.05;
 
-    vec3 p0 = vec3(a0.xy,h.x);
-    vec3 p1 = vec3(a0.zw,h.y);
-    vec3 p2 = vec3(a1.xy,h.z);
-    vec3 p3 = vec3(a1.zw,h.w);
+    // Screen-space anti-aliased line rendering
+    float g = max(length(vec2(dFdx(e), dFdy(e))), 1e-5);
+    float d = abs(fract(e - 0.5) - 0.5) / g;
 
-    vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));
-    p0 *= norm.x;
-    p1 *= norm.y;
-    p2 *= norm.z;
-    p3 *= norm.w;
+    float isIndex = 1.0 - step(0.5, mod(floor(e + 0.5), indexEvery));
+    float halfWidth = mix(0.45, 0.85, isIndex);
+    float line = 1.0 - smoothstep(halfWidth - 0.5, halfWidth + 0.5, d);
+    line *= mix(0.70, 1.0, isIndex);
 
-    vec4 m = max(0.5 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
-    m = m * m;
-    return 105.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3) ) );
+    line *= 1.0 - smoothstep(0.40, 0.85, g);
+    float wash = smoothstep(0.45, 0.95, g) * 0.25;
+
+    float alpha = max(line, wash);
+    if (alpha < 0.004) discard;
+
+    gl_FragColor = vec4(color, alpha);
   }
 `;
 
 function init(mount) {
-  const pixelRatio = Math.min(window.devicePixelRatio, 2);
+  const pixelRatio = Math.min(window.devicePixelRatio, 1.5); // Cap at 1.5 for performance
 
   const scene = new THREE.Scene();
-  // Fullscreen quad: the vertex shader writes clip space directly, so the
-  // camera only has to be permissive enough to keep the mesh in view.
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, -1, 1);
 
-  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false });
   renderer.setClearColor(0, 0);
   renderer.setPixelRatio(pixelRatio);
 
@@ -134,28 +175,49 @@ function init(mount) {
     uniforms: {
       color: { value: contourColor(mount) },
       time: { value: 0 },
+      resolution: { value: new THREE.Vector2() },
       pixelRatio: { value: pixelRatio },
     },
     vertexShader: vs,
-    fragmentShader: snoise + fs,
+    fragmentShader: snoise2D + fs,
+    transparent: true,
+    depthWrite: false,
+    extensions: { derivatives: true },
   });
-  scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
 
+  scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
   mount.appendChild(renderer.domElement);
 
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
   function resize() {
-    renderer.setSize(mount.clientWidth, mount.clientHeight);
+    const width = mount.clientWidth;
+    const height = mount.clientHeight;
+    renderer.setSize(width, height);
+    material.uniforms.resolution.value.set(width * pixelRatio, height * pixelRatio);
+
+    if (reducedMotion.matches) renderer.render(scene, camera);
   }
   resize();
   window.addEventListener("resize", resize);
 
-  const clock = new THREE.Clock();
-  function frame() {
+  const minFrameTime = 1000 / 30; // Cap at 30fps
+  let lastRender = 0;
+
+  function frame(now) {
     requestAnimationFrame(frame);
-    material.uniforms.time.value = clock.getElapsedTime();
+    if (now - lastRender < minFrameTime) return;
+    lastRender = now;
+
+    material.uniforms.time.value = now / 1000;
     renderer.render(scene, camera);
   }
-  frame();
+
+  if (!reducedMotion.matches) {
+    requestAnimationFrame(frame);
+  } else {
+    renderer.render(scene, camera);
+  }
 }
 
 if (container) {
