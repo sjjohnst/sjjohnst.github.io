@@ -1,163 +1,144 @@
 import * as THREE from "https://unpkg.com/three@0.160.0/build/three.module.js";
+import config from "./topo.config.js";
+import { vertexShader, snoise2D, fragmentShader } from "./topo.shader.js";
 
 const container = document.getElementById("topography-bg");
 
-function contourColor(el) {
-  const css = getComputedStyle(el).getPropertyValue("--contour-color").trim();
-  return new THREE.Color(css);
+// uniform name -> [config group, key]. Adding a setting: config key, a line
+// here, and the uniform declaration in topo.shader.js.
+const CONFIG_UNIFORMS = {
+  terrainScale: ["terrain", "scale"],
+  terrainLacunarity: ["terrain", "lacunarity"],
+  terrainGain: ["terrain", "gain"],
+  contrast: ["terrain", "contrast"],
+  lightnessRange: ["terrain", "lightnessRange"],
+  contourDrift: ["lines", "contourDrift"],
+  levels: ["lines", "levels"],
+  indexEvery: ["lines", "indexEvery"],
+  lineWidth: ["lines", "width"],
+};
+
+function cssColor(el, name, fallback) {
+  const css = getComputedStyle(el).getPropertyValue(name).trim();
+  return new THREE.Color(css || fallback);
 }
 
-const vs = `
-  void main() {
-    gl_Position = vec4(position.xy, 0.0, 1.0);
-  }
-`;
+// The shader writes straight to the canvas, so colors must be raw sRGB values
+// (not three's linear working space) to match the CSS exactly.
+function lineColor(el) {
+  return cssColor(el, "--contour-color", "#ffffff").convertLinearToSRGB();
+}
 
-const fs = `
-  uniform vec3 color;
-  uniform float time;
-  uniform float pixelRatio;
-
-  void main() {
-    float levels = 12.0; // Number of distinct "bands" you want
-
-    // gl_FragCoord is in physical pixels, so divide out the device pixel ratio
-    // to keep the contours the same visual size on every display.
-    vec2 p = gl_FragCoord.xy / pixelRatio;
-
-    float noise = snoise(vec3(p * 0.003, time * 0.012)); // Noise value
-    noise = (noise + 1.0) / 2.0; // Normalize it
-
-    // We want to posterize + detect edges
-    float lower = floor(noise * levels) / levels; // Find the lower band/level the noise matches at
-    float lowerDiff = noise - lower; // and find the difference
-
-    // if the difference between the lower level is within some range, paint the fragment, otherwise ignore it
-    if (lowerDiff > 0.005)
-      discard;
-
-    gl_FragColor = vec4(color, 1.0);
-  }
-`;
-
-const snoise = `
-  //
-  // Description : Array and textureless GLSL 2D/3D/4D simplex
-  //               noise functions.
-  //      Author : Ian McEwan, Ashima Arts.
-  //  Maintainer : stegu
-  //     Lastmod : 20201014 (stegu)
-  //     License : Copyright (C) 2011 Ashima Arts. All rights reserved.
-  //               Distributed under the MIT License. See LICENSE file.
-  //               https://github.com/ashima/webgl-noise
-  //               https://github.com/stegu/webgl-noise
-  //
-
-  vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-  vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-
-  vec4 permute(vec4 x) { return mod289(((x*34.0)+10.0)*x); }
-
-  vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
-
-  float snoise(vec3 v) {
-    const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;
-    const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);
-
-    vec3 i  = floor(v + dot(v, C.yyy) );
-    vec3 x0 =   v - i + dot(i, C.xxx) ;
-
-    vec3 g = step(x0.yzx, x0.xyz);
-    vec3 l = 1.0 - g;
-    vec3 i1 = min( g.xyz, l.zxy );
-    vec3 i2 = max( g.xyz, l.zxy );
-
-    vec3 x1 = x0 - i1 + C.xxx;
-    vec3 x2 = x0 - i2 + C.yyy;
-    vec3 x3 = x0 - D.yyy;
-
-    i = mod289(i);
-    vec4 p = permute( permute( permute( i.z + vec4(0.0, i1.z, i2.z, 1.0 )) + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));
-
-    float n_ = 0.142857142857;
-    vec3  ns = n_ * D.wyz - D.xzx;
-
-    vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
-
-    vec4 x_ = floor(j * ns.z);
-    vec4 y_ = floor(j - 7.0 * x_ );
-
-    vec4 x = x_ *ns.x + ns.yyyy;
-    vec4 y = y_ *ns.x + ns.yyyy;
-    vec4 h = 1.0 - abs(x) - abs(y);
-
-    vec4 b0 = vec4( x.xy, y.xy );
-    vec4 b1 = vec4( x.zw, y.zw );
-
-    vec4 s0 = floor(b0)*2.0 + 1.0;
-    vec4 s1 = floor(b1)*2.0 + 1.0;
-    vec4 sh = -step(h, vec4(0.0));
-
-    vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;
-    vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;
-
-    vec3 p0 = vec3(a0.xy,h.x);
-    vec3 p1 = vec3(a0.zw,h.y);
-    vec3 p2 = vec3(a1.xy,h.z);
-    vec3 p3 = vec3(a1.zw,h.w);
-
-    vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));
-    p0 *= norm.x;
-    p1 *= norm.y;
-    p2 *= norm.z;
-    p3 *= norm.w;
-
-    vec4 m = max(0.5 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
-    m = m * m;
-    return 105.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3) ) );
-  }
-`;
+// Terrain color as sRGB hue/saturation/lightness (each 0..1). The shader
+// shifts the lightness per pixel, so the conversion is done once here.
+function terrainHsl(el) {
+  const hsl = cssColor(el, "--terrain-color", "#808080").getHSL({}, THREE.SRGBColorSpace);
+  return new THREE.Vector3(hsl.h, hsl.s, hsl.l);
+}
 
 function init(mount) {
-  const pixelRatio = Math.min(window.devicePixelRatio, 2);
+  let pixelRatio = Math.min(window.devicePixelRatio, config.render.pixelRatioCap);
 
   const scene = new THREE.Scene();
-  // Fullscreen quad: the vertex shader writes clip space directly, so the
-  // camera only has to be permissive enough to keep the mesh in view.
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, -1, 1);
 
-  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-  renderer.setClearColor(0, 0);
+  const renderer = new THREE.WebGLRenderer({ alpha: false, antialias: false });
   renderer.setPixelRatio(pixelRatio);
 
+  // Config-driven uniforms start from the config value; arrays become vec2.
+  const configUniforms = Object.fromEntries(
+    Object.entries(CONFIG_UNIFORMS).map(([name, [group, key]]) => {
+      const v = config[group][key];
+      return [name, { value: Array.isArray(v) ? new THREE.Vector2(...v) : v }];
+    }),
+  );
   const material = new THREE.ShaderMaterial({
+    defines: { BASE_OCTAVES: config.terrain.octaves },
     uniforms: {
-      color: { value: contourColor(mount) },
+      ...configUniforms,
+      lineColor: { value: lineColor(mount) },
+      terrainHsl: { value: terrainHsl(mount) },
       time: { value: 0 },
+      resolution: { value: new THREE.Vector2() },
       pixelRatio: { value: pixelRatio },
     },
-    vertexShader: vs,
-    fragmentShader: snoise + fs,
+    vertexShader,
+    fragmentShader: snoise2D + fragmentShader,
+    depthWrite: false,
+    extensions: { derivatives: true },
   });
-  scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
 
+  // Copies config into the shader. Re-run after editing config; changing the
+  // octave count also needs material.needsUpdate (it is a #define).
+  function syncConfig() {
+    material.defines.BASE_OCTAVES = config.terrain.octaves;
+    for (const [name, [group, key]] of Object.entries(CONFIG_UNIFORMS)) {
+      const v = config[group][key];
+      const uniform = material.uniforms[name];
+      if (Array.isArray(v)) uniform.value.set(...v);
+      else uniform.value = v;
+    }
+  }
+  syncConfig();
+
+  scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
   mount.appendChild(renderer.domElement);
 
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
   function resize() {
-    renderer.setSize(mount.clientWidth, mount.clientHeight);
+    const width = mount.clientWidth;
+    const height = mount.clientHeight;
+    renderer.setSize(width, height);
+    material.uniforms.resolution.value.set(width * pixelRatio, height * pixelRatio);
+
+    if (reducedMotion.matches) renderer.render(scene, camera);
   }
   resize();
   window.addEventListener("resize", resize);
 
-  const clock = new THREE.Clock();
-  function frame() {
+  let lastRender = 0;
+
+  function frame(now) {
     requestAnimationFrame(frame);
-    material.uniforms.time.value = clock.getElapsedTime();
+    if (now - lastRender < 1000 / config.render.fps) return;
+    lastRender = now;
+
+    material.uniforms.time.value = now / 1000;
     renderer.render(scene, camera);
   }
-  frame();
+
+  if (!reducedMotion.matches) {
+    requestAnimationFrame(frame);
+  } else {
+    renderer.render(scene, camera);
+  }
+
+  // Apply an edited config to the running animation (e.g. from the local tuning panel).
+  function update() {
+    const recompile = material.defines.BASE_OCTAVES !== config.terrain.octaves;
+    syncConfig();
+    if (recompile) material.needsUpdate = true;
+
+    const ratio = Math.min(window.devicePixelRatio, config.render.pixelRatioCap);
+    if (ratio !== pixelRatio) {
+      pixelRatio = ratio;
+      renderer.setPixelRatio(ratio);
+      material.uniforms.pixelRatio.value = ratio;
+      resize();
+    }
+    if (reducedMotion.matches) renderer.render(scene, camera);
+  }
+
+  return update;
 }
 
 if (container) {
-  init(container);
+  const update = init(container);
+
+  if (["localhost", "127.0.0.1"].includes(location.hostname)) {
+    import("./topo.debug.js")
+      .then((m) => m.default(config, update))
+      .catch(() => { }); // panel file is local-only and may be absent
+  }
 }
