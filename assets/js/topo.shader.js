@@ -47,8 +47,8 @@ export const snoise2D = `
 `;
 
 // Every uniform below is driven by topo.config.js (see syncConfig in topo.js).
-// BASE_OCTAVES and RIDGE_OCTAVES are loop bounds, so they are #defines
-// supplied by the material rather than uniforms.
+// BASE_OCTAVES is a loop bound, so it is a #define supplied by the material
+// rather than a uniform.
 export const fragmentShader = `
   uniform vec3 color;
   uniform float time;
@@ -59,90 +59,31 @@ export const fragmentShader = `
   uniform float terrainScale;
   uniform float terrainLacunarity;
   uniform float terrainGain;
-  uniform vec2 terrainDrift;
   uniform float contrast;
-  // ridges
-  uniform float ridgeScale;
-  uniform float ridgeStrength;
-  uniform float ridgeLacunarity;
-  uniform float ridgeGain;
-  uniform vec2 ridgeDrift;
-  uniform float maskFloor;
-  uniform vec2 maskRange;
-  // warp
-  uniform float warpScale;
-  uniform float warpStrength;
-  uniform vec2 warpDrift;
   // motion
-  uniform vec2 pan;
   uniform float contourDrift;
   // lines
   uniform float levels;
   uniform float indexEvery;
   uniform vec2 lineWidth;      // x: normal, y: index
-  uniform vec2 lineOpacity;    // x: normal, y: index
-  uniform vec2 steepFade;      // gradient range where lines fade out
-  uniform vec2 washRange;      // gradient range where the wash fades in
-  uniform float washOpacity;
 
   const mat2 ROT = mat2(0.80, 0.60, -0.60, 0.80);
 
-  // Each octave gets its own drift velocity, so they slide across one another
-  // rather than in lockstep. That is what makes the field genuinely change
-  // shape over time -- a single shared offset would only translate the image.
   float fbm(vec2 p) {
     float amp = 0.5;
     float sum = 0.0;
     float norm = 0.0;
-    vec2 drift = terrainDrift;
     for (int i = 0; i < BASE_OCTAVES; i++) {
-      sum += amp * snoise(p + drift * time);
+      sum += amp * snoise(p);
       norm += amp;
       p = ROT * p * terrainLacunarity;
-      drift = ROT * drift * -0.7;
       amp *= terrainGain;
     }
     return sum / norm;
   }
 
-  float ridge(vec2 p) {
-    float amp = 0.5;
-    float sum = 0.0;
-    float norm = 0.0;
-    float weight = 1.0;
-    vec2 drift = ridgeDrift;
-    for (int i = 0; i < RIDGE_OCTAVES; i++) {
-      float n = 1.0 - abs(snoise(p + drift * time));
-      n *= n;
-      n *= weight;
-      weight = clamp(n * 2.0, 0.0, 1.0);
-      sum += amp * n;
-      norm += amp;
-      p = ROT * p * ridgeLacunarity;
-      drift = ROT * drift * -0.7;
-      amp *= ridgeGain;
-    }
-    return sum / norm;
-  }
-
   float elevation(vec2 q) {
-    // Only a hint of bulk pan -- the flow comes from the per-octave drift and
-    // the warp below, not from sliding the whole landscape past the viewport.
-    vec2 p = q + pan * time;
-
-    // Subtle domain warp, moving on its own heading so it flows across the base
-    // field rather than travelling with it.
-    vec2 w = p * warpScale + warpDrift * time;
-    p += vec2(snoise(w), snoise(w + vec2(13.4, 7.1))) * warpStrength;
-
-    float base = fbm(p) * 0.5 + 0.5;
-    float crests = ridge(p * ridgeScale + vec2(5.2, 1.3));
-
-    // Floor the mask so low country keeps some roughness; at zero there was a
-    // visible seam between rough high ground and smooth basins.
-    float mask = maskFloor + (1.0 - maskFloor) * smoothstep(maskRange.x, maskRange.y, base);
-    float h = clamp(base * (1.0 - ridgeStrength) + crests * ridgeStrength * mask, 0.0, 1.0);
-
+    float h = clamp(fbm(q) * 0.5 + 0.5, 0.0, 1.0);
     return pow(h, contrast);
   }
 
@@ -167,14 +108,9 @@ export const fragmentShader = `
     float isIndex = 1.0 - step(0.5, mod(floor(e + 0.5), indexEvery));
     float halfWidth = mix(lineWidth.x, lineWidth.y, isIndex);
     float line = 1.0 - smoothstep(halfWidth - 0.5, halfWidth + 0.5, d);
-    line *= mix(lineOpacity.x, lineOpacity.y, isIndex);
 
-    line *= 1.0 - smoothstep(steepFade.x, steepFade.y, g);
-    float wash = smoothstep(washRange.x, washRange.y, g) * washOpacity;
+    if (line < 0.004) discard;
 
-    float alpha = max(line, wash);
-    if (alpha < 0.004) discard;
-
-    gl_FragColor = vec4(color, alpha);
+    gl_FragColor = vec4(color, line);
   }
 `;
