@@ -46,12 +46,15 @@ export const snoise2D = `
   }
 `;
 
-// Every uniform below is driven by topo.config.js (see syncConfig in topo.js).
+// Uniform sources:
+//   - terrain / lines groups: topo.config.js, copied by syncConfig in topo.js
+//   - lineColor, terrainHsl: CSS custom properties in _sass/_topography.scss
+//   - time, resolution, pixelRatio: set per frame / on resize in topo.js
 // BASE_OCTAVES is a loop bound, so it is a #define supplied by the material
 // rather than a uniform.
 export const fragmentShader = `
-  uniform vec3 color;
-  uniform vec3 terrainColor;   // sRGB base ground colour
+  uniform vec3 lineColor;
+  uniform vec3 terrainHsl;     // base ground color, sRGB as hue/saturation/lightness
   uniform float time;
   uniform vec2 resolution;
   uniform float pixelRatio;
@@ -61,83 +64,71 @@ export const fragmentShader = `
   uniform float terrainLacunarity;
   uniform float terrainGain;
   uniform float contrast;
-  uniform float shade;         // lightness shift (0..1) at the highest/lowest ground
-  // motion
-  uniform float contourDrift;
+  uniform float lightnessRange; // lightness shift (0..1) at the highest/lowest ground
   // lines
+  uniform float contourDrift;
   uniform float levels;
   uniform float indexEvery;
   uniform vec2 lineWidth;      // x: normal, y: index
 
-  // HSL, so height changes true lightness and leaves hue/saturation alone.
-  vec3 rgb2hsl(vec3 c) {
-    float mx = max(c.r, max(c.g, c.b));
-    float mn = min(c.r, min(c.g, c.b));
-    float d = mx - mn;
-    float l = (mx + mn) * 0.5;
-    if (d < 1e-5) return vec3(0.0, 0.0, l);
-    float s = d / (1.0 - abs(2.0 * l - 1.0));
-    float hue = mx == c.r ? mod((c.g - c.b) / d, 6.0)
-              : mx == c.g ? (c.b - c.r) / d + 2.0
-              : (c.r - c.g) / d + 4.0;
-    return vec3(hue, s, l);
-  }
-
-  vec3 hsl2rgb(vec3 c) {
-    vec3 k = mod(vec3(0.0, 8.0, 4.0) + c.x * 2.0, 12.0);
-    float a = c.y * min(c.z, 1.0 - c.z);
-    return c.z - a * clamp(min(k - 3.0, 9.0 - k), -1.0, 1.0);
+  // HSL (hue 0..1), so height changes true lightness and leaves hue and
+  // saturation alone.
+  vec3 hsl2rgb(vec3 hsl) {
+    vec3 sector = mod(vec3(0.0, 8.0, 4.0) + hsl.x * 12.0, 12.0);
+    float chroma = hsl.y * min(hsl.z, 1.0 - hsl.z);
+    return hsl.z - chroma * clamp(min(sector - 3.0, 9.0 - sector), -1.0, 1.0);
   }
 
   const mat2 ROT = mat2(0.80, 0.60, -0.60, 0.80);
 
-  float fbm(vec2 p) {
-    float amp = 0.5;
+  float fbm(vec2 coord) {
+    float amplitude = 0.5;
     float sum = 0.0;
-    float norm = 0.0;
+    float totalAmplitude = 0.0;
     for (int i = 0; i < BASE_OCTAVES; i++) {
-      sum += amp * snoise(p);
-      norm += amp;
-      p = ROT * p * terrainLacunarity;
-      amp *= terrainGain;
+      sum += amplitude * snoise(coord);
+      totalAmplitude += amplitude;
+      coord = ROT * coord * terrainLacunarity;
+      amplitude *= terrainGain;
     }
-    return sum / norm;
+    return sum / totalAmplitude;
   }
 
-  float elevation(vec2 q) {
-    float h = clamp(fbm(q) * 0.5 + 0.5, 0.0, 1.0);
-    return pow(h, contrast);
+  float elevation(vec2 coord) {
+    float normalised = clamp(fbm(coord) * 0.5 + 0.5, 0.0, 1.0);
+    return pow(normalised, contrast);
   }
 
   void main() {
     // Centred origin, but scaled in CSS pixels: feature size and contour
     // spacing then stay constant across viewports instead of the whole
     // landscape zooming to fit the short edge (which crushed it on phones).
-    vec2 st = (gl_FragCoord.xy - 0.5 * resolution.xy) / pixelRatio;
-    vec2 q = st * terrainScale;
+    vec2 pixelPosition = (gl_FragCoord.xy - 0.5 * resolution.xy) / pixelRatio;
+    vec2 terrainCoord = pixelPosition * terrainScale;
+
+    float height = elevation(terrainCoord);
 
     // Drifting the band coordinate itself walks every contour across the
     // slopes: rings collapse into peaks and vanish, new ones open in the
     // basins. Costs one add and does most of the work of making this feel
     // alive. Kept slow -- it also cycles which lines count as index contours
     // below, and that wants to read as ambient rather than as a flicker.
-    float h = elevation(q);
-    float e = h * levels + time * contourDrift;
+    float contourCoord = height * levels + time * contourDrift;
 
     // Screen-space anti-aliased line rendering
-    float g = max(length(vec2(dFdx(e), dFdy(e))), 1e-5);
-    float d = abs(fract(e - 0.5) - 0.5) / g;
+    float contourSlope = max(length(vec2(dFdx(contourCoord), dFdy(contourCoord))), 1e-5);
+    float pixelDistance = abs(fract(contourCoord - 0.5) - 0.5) / contourSlope;
 
-    float isIndex = 1.0 - step(0.5, mod(floor(e + 0.5), indexEvery));
+    float isIndex = 1.0 - step(0.5, mod(floor(contourCoord + 0.5), indexEvery));
     float halfWidth = mix(lineWidth.x, lineWidth.y, isIndex);
-    float line = 1.0 - smoothstep(halfWidth - 0.5, halfWidth + 0.5, d);
+    float line = 1.0 - smoothstep(halfWidth - 0.5, halfWidth + 0.5, pixelDistance);
 
-    // Ground colour: base lightness shifted up on high ground, down on low.
-    // Uses h, not e, so it stays put while the contours drift.
-    vec3 hsl = rgb2hsl(terrainColor);
-    hsl.z = clamp(hsl.z + (h - 0.5) * 2.0 * shade, 0.0, 1.0);
+    // Ground color: base lightness shifted up on high ground, down on low.
+    // Uses height, not contourCoord, so it stays put while the contours drift.
+    vec3 hsl = terrainHsl;
+    hsl.z = clamp(hsl.z + (height - 0.5) * 2.0 * lightnessRange, 0.0, 1.0);
     vec3 ground = hsl2rgb(hsl);
 
-    gl_FragColor = vec4(mix(ground, color, line), 1.0);
+    gl_FragColor = vec4(mix(ground, lineColor, line), 1.0);
   }
 `;

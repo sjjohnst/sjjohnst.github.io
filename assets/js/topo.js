@@ -4,16 +4,36 @@ import { vertexShader, snoise2D, fragmentShader } from "./topo.shader.js";
 
 const container = document.getElementById("topography-bg");
 
-function contourColor(el) {
-  const css = getComputedStyle(el).getPropertyValue("--contour-color").trim();
-  return new THREE.Color(css || "#ffffff");
+// uniform name -> [config group, key]. Adding a setting: config key, a line
+// here, and the uniform declaration in topo.shader.js.
+const CONFIG_UNIFORMS = {
+  terrainScale: ["terrain", "scale"],
+  terrainLacunarity: ["terrain", "lacunarity"],
+  terrainGain: ["terrain", "gain"],
+  contrast: ["terrain", "contrast"],
+  lightnessRange: ["terrain", "lightnessRange"],
+  contourDrift: ["lines", "contourDrift"],
+  levels: ["lines", "levels"],
+  indexEvery: ["lines", "indexEvery"],
+  lineWidth: ["lines", "width"],
+};
+
+function cssColor(el, name, fallback) {
+  const css = getComputedStyle(el).getPropertyValue(name).trim();
+  return new THREE.Color(css || fallback);
 }
 
-// Raw sRGB values (not three's linear working space): the shader writes
-// straight to the canvas, and must match the CSS colour exactly.
-function terrainColor(el) {
-  const css = getComputedStyle(el).getPropertyValue("--terrain-color").trim();
-  return new THREE.Color(css || "#808080").convertLinearToSRGB();
+// The shader writes straight to the canvas, so colors must be raw sRGB values
+// (not three's linear working space) to match the CSS exactly.
+function lineColor(el) {
+  return cssColor(el, "--contour-color", "#ffffff").convertLinearToSRGB();
+}
+
+// Terrain color as sRGB hue/saturation/lightness (each 0..1). The shader
+// shifts the lightness per pixel, so the conversion is done once here.
+function terrainHsl(el) {
+  const hsl = cssColor(el, "--terrain-color", "#808080").getHSL({}, THREE.SRGBColorSpace);
+  return new THREE.Vector3(hsl.h, hsl.s, hsl.l);
 }
 
 function init(mount) {
@@ -22,32 +42,28 @@ function init(mount) {
   const scene = new THREE.Scene();
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, -1, 1);
 
-  const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false });
-  renderer.setClearColor(0, 0);
+  const renderer = new THREE.WebGLRenderer({ alpha: false, antialias: false });
   renderer.setPixelRatio(pixelRatio);
 
-  const v2 = () => new THREE.Vector2();
+  // Config-driven uniforms start from the config value; arrays become vec2.
+  const configUniforms = Object.fromEntries(
+    Object.entries(CONFIG_UNIFORMS).map(([name, [group, key]]) => {
+      const v = config[group][key];
+      return [name, { value: Array.isArray(v) ? new THREE.Vector2(...v) : v }];
+    }),
+  );
   const material = new THREE.ShaderMaterial({
     defines: { BASE_OCTAVES: config.terrain.octaves },
     uniforms: {
-      color: { value: contourColor(mount) },
-      terrainColor: { value: terrainColor(mount) },
+      ...configUniforms,
+      lineColor: { value: lineColor(mount) },
+      terrainHsl: { value: terrainHsl(mount) },
       time: { value: 0 },
-      resolution: { value: v2() },
+      resolution: { value: new THREE.Vector2() },
       pixelRatio: { value: pixelRatio },
-      terrainScale: { value: 0 },
-      terrainLacunarity: { value: 0 },
-      terrainGain: { value: 0 },
-      contrast: { value: 0 },
-      shade: { value: 0 },
-      contourDrift: { value: 0 },
-      levels: { value: 0 },
-      indexEvery: { value: 0 },
-      lineWidth: { value: v2() },
     },
     vertexShader,
     fragmentShader: snoise2D + fragmentShader,
-    transparent: true,
     depthWrite: false,
     extensions: { derivatives: true },
   });
@@ -55,18 +71,13 @@ function init(mount) {
   // Copies config into the shader. Re-run after editing config; changing the
   // octave count also needs material.needsUpdate (it is a #define).
   function syncConfig() {
-    const { terrain, motion, lines } = config;
-    const u = material.uniforms;
-    material.defines.BASE_OCTAVES = terrain.octaves;
-    u.terrainScale.value = terrain.scale;
-    u.terrainLacunarity.value = terrain.lacunarity;
-    u.terrainGain.value = terrain.gain;
-    u.contrast.value = terrain.contrast;
-    u.shade.value = terrain.shade;
-    u.contourDrift.value = motion.contourDrift;
-    u.levels.value = lines.levels;
-    u.indexEvery.value = lines.indexEvery;
-    u.lineWidth.value.set(...lines.width);
+    material.defines.BASE_OCTAVES = config.terrain.octaves;
+    for (const [name, [group, key]] of Object.entries(CONFIG_UNIFORMS)) {
+      const v = config[group][key];
+      const uniform = material.uniforms[name];
+      if (Array.isArray(v)) uniform.value.set(...v);
+      else uniform.value = v;
+    }
   }
   syncConfig();
 
@@ -103,7 +114,7 @@ function init(mount) {
     renderer.render(scene, camera);
   }
 
-  // Apply an edited config to the running animation (used by topo.debug.js).
+  // Apply an edited config to the running animation (e.g. from the local tuning panel).
   function update() {
     const recompile = material.defines.BASE_OCTAVES !== config.terrain.octaves;
     syncConfig();
@@ -125,8 +136,9 @@ function init(mount) {
 if (container) {
   const update = init(container);
 
-  // Tuning panel: dev server only, never loaded for visitors.
   if (["localhost", "127.0.0.1"].includes(location.hostname)) {
-    import("./topo.debug.js").then((m) => m.default(config, update));
+    import("./topo.debug.js")
+      .then((m) => m.default(config, update))
+      .catch(() => { }); // panel file is local-only and may be absent
   }
 }
