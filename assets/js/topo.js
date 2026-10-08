@@ -9,6 +9,13 @@ function contourColor(el) {
   return new THREE.Color(css || "#ffffff");
 }
 
+// Raw sRGB values (not three's linear working space): the shader writes
+// straight to the canvas, and must match the CSS colour exactly.
+function terrainColor(el) {
+  const css = getComputedStyle(el).getPropertyValue("--terrain-color").trim();
+  return new THREE.Color(css || "#808080").convertLinearToSRGB();
+}
+
 function init(mount) {
   let pixelRatio = Math.min(window.devicePixelRatio, config.render.pixelRatioCap);
 
@@ -24,6 +31,7 @@ function init(mount) {
     defines: { BASE_OCTAVES: config.terrain.octaves },
     uniforms: {
       color: { value: contourColor(mount) },
+      terrainColor: { value: terrainColor(mount) },
       time: { value: 0 },
       resolution: { value: v2() },
       pixelRatio: { value: pixelRatio },
@@ -31,6 +39,7 @@ function init(mount) {
       terrainLacunarity: { value: 0 },
       terrainGain: { value: 0 },
       contrast: { value: 0 },
+      shade: { value: 0 },
       contourDrift: { value: 0 },
       levels: { value: 0 },
       indexEvery: { value: 0 },
@@ -53,6 +62,7 @@ function init(mount) {
     u.terrainLacunarity.value = terrain.lacunarity;
     u.terrainGain.value = terrain.gain;
     u.contrast.value = terrain.contrast;
+    u.shade.value = terrain.shade;
     u.contourDrift.value = motion.contourDrift;
     u.levels.value = lines.levels;
     u.indexEvery.value = lines.indexEvery;

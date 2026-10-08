@@ -7,7 +7,8 @@ export default {
     octaves: 5,
     lacunarity: 1.93,
     gain: 0.45,
-    contrast: 1.0
+    contrast: 2,
+    shade: 0.15
   },
   motion: {
     contourDrift: 0.068
@@ -15,10 +16,11 @@ export default {
   lines: {
     levels: 25,
     indexEvery: 7,
-    width: [0.4, 1.0]
+    width: [0.45, 1]
   },
   render: {
     fps: 30,
-    pixelRatioCap: 9.99
+    pixelRatioCap: 10.0
   }
 };
+

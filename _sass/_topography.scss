@@ -6,7 +6,7 @@
 	z-index: -1;
 	pointer-events: none;
 	overflow: hidden;
-	background: variables.$dusty-olive;
+	--terrain-color: #{variables.$bg-page};
 	--contour-color: #{variables.$dusty-taupe};
 
 	canvas {

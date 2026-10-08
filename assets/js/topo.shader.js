@@ -51,6 +51,7 @@ export const snoise2D = `
 // rather than a uniform.
 export const fragmentShader = `
   uniform vec3 color;
+  uniform vec3 terrainColor;   // sRGB base ground colour
   uniform float time;
   uniform vec2 resolution;
   uniform float pixelRatio;
@@ -60,12 +61,33 @@ export const fragmentShader = `
   uniform float terrainLacunarity;
   uniform float terrainGain;
   uniform float contrast;
+  uniform float shade;         // lightness shift (0..1) at the highest/lowest ground
   // motion
   uniform float contourDrift;
   // lines
   uniform float levels;
   uniform float indexEvery;
   uniform vec2 lineWidth;      // x: normal, y: index
+
+  // HSL, so height changes true lightness and leaves hue/saturation alone.
+  vec3 rgb2hsl(vec3 c) {
+    float mx = max(c.r, max(c.g, c.b));
+    float mn = min(c.r, min(c.g, c.b));
+    float d = mx - mn;
+    float l = (mx + mn) * 0.5;
+    if (d < 1e-5) return vec3(0.0, 0.0, l);
+    float s = d / (1.0 - abs(2.0 * l - 1.0));
+    float hue = mx == c.r ? mod((c.g - c.b) / d, 6.0)
+              : mx == c.g ? (c.b - c.r) / d + 2.0
+              : (c.r - c.g) / d + 4.0;
+    return vec3(hue, s, l);
+  }
+
+  vec3 hsl2rgb(vec3 c) {
+    vec3 k = mod(vec3(0.0, 8.0, 4.0) + c.x * 2.0, 12.0);
+    float a = c.y * min(c.z, 1.0 - c.z);
+    return c.z - a * clamp(min(k - 3.0, 9.0 - k), -1.0, 1.0);
+  }
 
   const mat2 ROT = mat2(0.80, 0.60, -0.60, 0.80);
 
@@ -99,7 +121,8 @@ export const fragmentShader = `
     // basins. Costs one add and does most of the work of making this feel
     // alive. Kept slow -- it also cycles which lines count as index contours
     // below, and that wants to read as ambient rather than as a flicker.
-    float e = elevation(q) * levels + time * contourDrift;
+    float h = elevation(q);
+    float e = h * levels + time * contourDrift;
 
     // Screen-space anti-aliased line rendering
     float g = max(length(vec2(dFdx(e), dFdy(e))), 1e-5);
@@ -109,8 +132,12 @@ export const fragmentShader = `
     float halfWidth = mix(lineWidth.x, lineWidth.y, isIndex);
     float line = 1.0 - smoothstep(halfWidth - 0.5, halfWidth + 0.5, d);
 
-    if (line < 0.004) discard;
+    // Ground colour: base lightness shifted up on high ground, down on low.
+    // Uses h, not e, so it stays put while the contours drift.
+    vec3 hsl = rgb2hsl(terrainColor);
+    hsl.z = clamp(hsl.z + (h - 0.5) * 2.0 * shade, 0.0, 1.0);
+    vec3 ground = hsl2rgb(hsl);
 
-    gl_FragColor = vec4(color, line);
+    gl_FragColor = vec4(mix(ground, color, line), 1.0);
   }
 `;
