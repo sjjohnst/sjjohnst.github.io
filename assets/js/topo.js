@@ -135,10 +135,4 @@ function init(mount) {
 
 if (container) {
   const update = init(container);
-
-  if (["localhost", "127.0.0.1"].includes(location.hostname)) {
-    import("./topo.debug.js")
-      .then((m) => m.default(config, update))
-      .catch(() => { }); // panel file is local-only and may be absent
-  }
 }
