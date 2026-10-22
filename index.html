@@ -56,6 +56,18 @@ full_bleed: true
     </div>
   </div>
 </section>
+<section class="highlights-band">
+  <div class="highlights-collage">
+    {% for item in site.data.highlights %}
+    <div class="highlight-card">
+      {% include starburst.html class="highlight-card-starburst" %}
+      <h3 class="highlight-title">{{ item.title }}</h3>
+      <p class="highlight-description">{{ item.description }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
 {% assign featured_project = site.data.projects | where: "featured", true | first %}
 {% if featured_project %}
 <section class="featured-band">
@@ -81,16 +93,4 @@ full_bleed: true
   </div>
 </section>
 {% endif %}
-
-<section class="highlights-band">
-  <div class="highlights-collage">
-    {% for item in site.data.highlights %}
-    <div class="highlight-card">
-      {% include starburst.html class="highlight-card-starburst" %}
-      <h3 class="highlight-title">{{ item.title }}</h3>
-      <p class="highlight-description">{{ item.description }}</p>
-    </div>
-    {% endfor %}
-  </div>
-</section>
 </div>

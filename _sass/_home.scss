@@ -9,16 +9,19 @@
 // shows through.
 .hero-frame {
     @include collage.inset-column;
-    padding-block: variables.$space-md variables.$space-2xl;
+    padding-block: variables.$space-md variables.$space-xl;
 }
 
 // Hero panel: headshot on the left, bio set directly on the olive ground.
 .hero-band {
     @include collage.band(variables.$deep-olive);
     border-radius: variables.$border-radius-xl;
-    @include containers.container-grain(0.08);
+    @include containers.container-grain(0.11);
+    background-color: color-mix(in srgb, variables.$deep-olive 65%, transparent);
+    padding-block: variables.$space-2xl;
+    padding-inline: variables.$space-2xl;
 
-    > .hero-collage {
+    >.hero-collage {
         @include containers.container-grain-content;
     }
 }
@@ -37,7 +40,7 @@
     // The portrait is the taller grid item, so this ratio sets the panel's
     // height: the column is a fixed share of the width, and the ratio turns
     // that width into a height. Taller <-> shorter: 4/5, 1/1, 8/7, 5/4, 4/3.
-    > .frame__clip {
+    >.frame__clip {
         aspect-ratio: 8 / 7;
     }
 }
@@ -58,7 +61,7 @@
     // A step above body copy — it is the only prose in the panel.
     font-size: clamp(1rem, 0.85rem + 0.7vw, 1.375rem);
     line-height: variables.$line-height-relaxed;
-    max-width: 34ch;
+    max-width: 48ch;
     margin: 0;
 }
 
@@ -83,7 +86,7 @@
         @include collage.collapse(variables.$space-xl);
     }
 
-    .hero-portrait > .frame__clip {
+    .hero-portrait>.frame__clip {
         aspect-ratio: 4 / 3;
     }
 }
