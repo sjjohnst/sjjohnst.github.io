@@ -6,7 +6,7 @@
 // panel's deep olive and the featured band's taupe. A hanging header on the
 // left, body copy on the right held to a readable measure.
 .about-band {
-    @include collage.band(variables.$palm-leaf);
+    @include collage.band(variables.$dark-moss);
     color: variables.$charcoal;
 }
 
@@ -23,7 +23,7 @@
 
 .about-title {
     @include collage.display(variables.$fs-display-lg, 600);
-    color: variables.$deep-olive;
+    color: variables.$khaki-beige;
     margin: 0;
 }
 
@@ -31,6 +31,7 @@
     @include collage.cell(6, 13);
     font-family: variables.$font-family-mono-retro;
     font-size: variables.$fs-body-fluid;
+    color: variables.$warm-cream;
 
     p {
         margin-bottom: variables.$space-lg;
@@ -42,13 +43,13 @@
     }
 
     a {
-        color: variables.$href-link;
+        color: variables.$sunlit-clay;
         font-weight: variables.$font-weight-semibold;
         text-decoration: none;
         transition: all variables.$transition-standard;
 
         &:hover {
-            color: color.adjust(variables.$href-link, $lightness: -15%);
+            color: color.adjust(variables.$sunlit-clay, $lightness: -15%);
             text-decoration: underline;
         }
     }

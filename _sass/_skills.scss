@@ -1,0 +1,63 @@
+@use "variables";
+@use "collage";
+
+// Homepage "Skills" band: a static grid of translucent cards.
+$skills-gap: variables.$space-xl;
+$skills-card-min: 16rem;
+
+.skills-band {
+    padding-block: variables.$space-2xl;
+    padding-inline: clamp(variables.$space-md, 4vw, variables.$space-3xl * 2);
+    flex-grow: 1;
+    color: variables.$charcoal;
+}
+
+.skills-collage {
+    @include collage.band-inner;
+    display: flex;
+    flex-direction: column;
+    gap: variables.$space-xl;
+}
+
+.skills-heading {
+    display: flex;
+    align-items: center;
+    gap: variables.$space-md;
+}
+
+.skills-starburst {
+    flex-shrink: 0;
+}
+
+.skills-title {
+    @include collage.display(variables.$fs-display-lg, 600);
+    color: variables.$mustard-yellow;
+    margin: 0;
+}
+
+.skills-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax($skills-card-min, 1fr));
+    gap: $skills-gap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.skill-card {
+    padding: variables.$space-2xl;
+    border-radius: variables.$border-radius-xl;
+    background-color: color-mix(in srgb, variables.$warm-cream 45%, transparent);
+}
+
+.skill-title {
+    @include collage.display(variables.$fs-display-md, 600);
+    color: variables.$ash-brown;
+    margin-bottom: variables.$space-sm;
+}
+
+.skill-description {
+    font-family: variables.$font-family-mono-retro;
+    font-size: variables.$fs-body-fluid;
+    line-height: variables.$line-height-relaxed;
+}

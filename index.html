@@ -15,12 +15,12 @@ full_bleed: true
       </figure>
 
       <div class="hero-intro">
-        <span class="section-eyebrow"> Geospatial Software Developer </span>
         <h1 class="hero-name">
           Samuel Johnston <span class="hero-pronouns">(he/him)</span>
         </h1>
+        <span class="section-eyebrow"> Geospatial Software Developer </span>
         <p class="hero-tagline">
-          Turning satellite imagery into tools for environmental action.
+          I build geospatial tools that support environmental monitoring and modelling.
         </p>
       </div>
     </div>
@@ -56,15 +56,22 @@ full_bleed: true
     </div>
   </div>
 </section>
-<section class="highlights-band">
-  <div class="highlights-collage">
-    {% for item in site.data.highlights %}
-    <div class="highlight-card">
-      {% include starburst.html class="highlight-card-starburst" %}
-      <h3 class="highlight-title">{{ item.title }}</h3>
-      <p class="highlight-description">{{ item.description }}</p>
+<!-- Skills band: one card per highlight, laid out in a static grid. -->
+<section class="skills-band">
+  <div class="skills-collage">
+    <div class="skills-heading">
+      {% include starburst.html class="skills-starburst" %}
+      <h2 class="skills-title">Skills</h2>
     </div>
-    {% endfor %}
+
+    <ul class="skills-list">
+      {% for item in site.data.highlights %}
+      <li class="skill-card">
+        <h3 class="skill-title">{{ item.title }}</h3>
+        <p class="skill-description">{{ item.description }}</p>
+      </li>
+      {% endfor %}
+    </ul>
   </div>
 </section>
 
