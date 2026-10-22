@@ -17,6 +17,7 @@ $mustard-yellow: #b8a221;
 $dark-moss: #33320f;
 $warm-cream: #ece3d3;
 $charcoal: #2b2a26;
+$ash-brown: #3d322c;
 
 // Semantic Color Tokens
 // Only tokens reused across several components live here — a color used
@@ -24,6 +25,7 @@ $charcoal: #2b2a26;
 $text-default: $charcoal;
 $text-muted: $palm-leaf;
 $href-link: #5d3d27;
+$bg-page: $dusty-olive;
 $bg-container: $ash-grey;
 $border-retro: $charcoal;
 
@@ -49,9 +51,9 @@ $font-family-mono-retro: "Space Mono", "Courier New", monospace;
 // replace the old `html { font-size: 90% }` zoom-out — clamp() mixes rem and
 // vw, so a scaled root font-size would move the rem term but not the vw term
 // and break the intended anchor points.
-$fs-display-xl: clamp(2.75rem, 1.6rem + 5.75vw, 6rem);      // hero name
-$fs-display-lg: clamp(2.25rem, 1.5rem + 3.75vw, 4.25rem);   // section titles
-$fs-display-md: clamp(1.75rem, 1.3rem + 2.25vw, 3rem);      // card titles
+$fs-display-xl: clamp(2.75rem, 1.6rem + 5.75vw, 6rem); // hero name
+$fs-display-lg: clamp(2.25rem, 1.5rem + 3.75vw, 4.25rem); // section titles
+$fs-display-md: clamp(1.75rem, 1.3rem + 2.25vw, 3rem); // card titles
 $fs-body-fluid: clamp(0.95rem, 0.9rem + 0.25vw, 1.0625rem);
 $fs-eyebrow: clamp(0.75rem, 0.7rem + 0.25vw, 0.9rem);
 
