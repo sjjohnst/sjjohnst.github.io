@@ -18,17 +18,6 @@
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
   </head>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const burger = document.querySelector('.navbar-burger');
-      const menu = document.querySelector('#navbarBasic');
-  
-      burger.addEventListener('click', () => {
-        burger.classList.toggle('is-active');
-        menu.classList.toggle('is-active');
-      });
-    });
-  </script>
   <body>
     <!-- Animated topographic background (populated by assets/js/topo.js) -->
     {%- if page.url == "/" or page.permalink == "/" -%}

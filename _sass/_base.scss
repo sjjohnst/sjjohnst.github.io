@@ -1,9 +1,8 @@
 @use "sass:color";
 @use "variables";
 
-html, body {
-    height: 100%;
-    margin: 0;
+html,
+body {
     font-family: variables.$font-family-default;
 }
 
