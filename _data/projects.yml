@@ -3,4 +3,26 @@
   description: >-
     Here's a fun little quiz I made to test wether there is any intuition about the gender of French nouns.
   date: 2024-08-01
+  featured: false
+- title: "Route Radar"
+  url: /projects/route-radar/
+  external_url: https://route-radar.johnston-samuelj.workers.dev/
+  description: |
+    RouteRadar is a passion project which combines my love of rock climbing with my love of 
+    geospatial tech. I had been really wanting to build something that would make it easier to find new
+    climbing areas for some time. 
+
+    <br>
+    Using high resolution digital elevation model (HRDEM) data, I was able to
+    estimate the terrain relief at 1m resolution across the Laurentian Mountains of Quebec 
+    (where I am often climbing). This proved to be a high enough resolution to identify cliffs and
+    boulders, so from there I developed a web application to host the data and provide a user interface
+    for exploring it.
+    
+    <br>
+    **My tech stack:** Python (data ingestion), TiTiler/FastAPI (backend API), Mapbox GL JS (frontend mapping).
+    Docker, AWS Lambda and Cloudflare Workers were used to deploy the application and API.
+
+  date: 2026-04-01
+  image: /assets/images/route-radar-screenshot.png
   featured: true

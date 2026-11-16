@@ -1,12 +1,13 @@
 - title: Data
   description: >-
-    Wrangling satellite imagery and remote sensing datasets into clean,
-    analysis-ready pipelines at scale.
-- title: Engineering
+    I love developing performant data architectures for analytics and modelling 
+    on massive earth observation or environmental data.
+- title: Software
   description: >-
-    Building and deploying ML pipelines and tools that turn research code
-    into reliable, production-ready systems.
-- title: Research
+    I love to build maintainable and elegant
+    applications which bring complex functionality to 
+    non-technical users.
+- title: Machine Learning
   description: >-
-    Exploring spatial-temporal forecasting methods and pushing on open
-    questions in earth observation.
+    I've built data-driven models for hydrology,
+    atmospheric forecasting, and lake systems modelling.

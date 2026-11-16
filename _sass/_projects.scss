@@ -48,7 +48,7 @@
     @include collage.band(variables.$dusty-taupe);
     @include containers.container-grain(0.08);
 
-    > .featured-collage {
+    >.featured-collage {
         @include containers.container-grain-content;
     }
 }
@@ -60,6 +60,7 @@
 
 .featured-project-text {
     @include collage.cell(1, 7);
+    // align-self: center;
     color: variables.$charcoal;
 }
 
@@ -83,7 +84,7 @@
     border-radius: 999px;
     border: 2px solid variables.$charcoal;
     padding: 0 variables.$space-xl;
-    height: 2.75rem;
+    height: 2.25rem;
     background: variables.$charcoal;
     color: variables.$warm-cream;
     font-family: variables.$font-family-mono-retro;
@@ -100,10 +101,6 @@
 .featured-project-media {
     @include collage.cell(7, 13);
     @include collage.frame(variables.$border-radius-md);
-
-    > .frame__clip {
-        aspect-ratio: 4 / 3;
-    }
 }
 
 .featured-project-placeholder {
@@ -124,7 +121,7 @@
         @include collage.collapse(variables.$space-xl);
     }
 
-    .featured-project-media > .frame__clip {
+    .featured-project-media>.frame__clip {
         aspect-ratio: 3 / 2;
     }
 }

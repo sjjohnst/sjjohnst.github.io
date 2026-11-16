@@ -20,7 +20,7 @@ full_bleed: true
         </h1>
         <span class="section-eyebrow"> Geospatial Software Developer </span>
         <p class="hero-tagline">
-          I build geospatial tools that support environmental monitoring and modelling.
+          I build tools that support environmental monitoring and modelling.
         </p>
       </div>
     </div>
@@ -36,22 +36,31 @@ full_bleed: true
 
     <div class="about-body">
       <p>
-        I'm passionate about earth observation data, and its growing role in environmental action.
-        I enjoy tranforming these large, complex datasets into actionable insights and elegant tools, for the benefit of people and planet.
-        :earth_americas:
+        Hello! My name is Sam. <br>
+        
+        I am passionate about the natural world, and trying to solve problems that are impacting
+        the environment and climate.
+        I work a lot with earth observation, remote sensing and geospatial data, and collaborate within
+        interdisciplinary teams to tackle these issues.
+        My technical expertise spans Software Development, Machine Learning, Data Science and Scientific Research.
       </p>
 
       <p>
-        Currently I work at <a href="https://www.h2ogeomatics.com/" target="_blank" rel="noopener noreferrer">H2O Geomatics</a>,
-        where I leverage satellite imagery for lake monitoring and modelling, as part of the <a href="https://climate.esa.int/en/projects/lakes/" target="_blank" rel="noopener noreferrer">ESA CCI Lakes</a> project.
+        Currently, I am the Lead Software Developer at
+         <a href="https://www.h2ogeomatics.com/" target="_blank" rel="noopener noreferrer">H2O Geomatics</a>.
+        
+        In this role, I contribute to research and data production for the 
+        <a href="https://climate.esa.int/en/projects/lakes/" target="_blank" rel="noopener noreferrer">ESA CCI Lakes</a> project,
+        lead a development team for a biodiversity monitoring web application,
+        and conduct research into deep learning approaches to lake systems modelling.
       </p>
-
       <p>
-        Outside of work I enjoy rock climbing, sewing and playing the guitar.
-      </p>
-
-      <p>
+        I also work as an independent contractor on the side (but unfortunately cannot say much more now).
         You can check out my Resume <a href="{{ site.baseurl }}/assets/files/johnston_samuel_resume_eng.pdf" target="_blank" rel="noopener noreferrer">here</a>.
+      </p>
+      <p>
+        In my freetime, I am an outdoor enthusiast, most especially for rock climbing and camping. 
+        I enjoy playing the guitar and writing little songs, as well as sewing, embroidery, and cooking.
       </p>
     </div>
   </div>
@@ -82,8 +91,8 @@ full_bleed: true
     <div class="featured-project-text">
       <span class="section-eyebrow">Featured Project</span>
       <h2 class="featured-project-title">{{ featured_project.title }}</h2>
-      <p class="featured-project-description">{{ featured_project.description }}</p>
-      <a class="featured-project-cta" href="{{ featured_project.url }}">View Project</a>
+      <div class="featured-project-description">{{ featured_project.description | markdownify }}</div>
+      <a class="featured-project-cta" href="{{ featured_project.external_url | default: featured_project.url }}">View Project</a>
     </div>
 
     <figure class="featured-project-media">
