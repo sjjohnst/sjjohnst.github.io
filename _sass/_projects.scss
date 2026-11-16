@@ -1,12 +1,14 @@
 @use "sass:color";
 @use "variables";
+@use "containers";
+@use "collage";
 
 .projects-grid {
     margin-top: variables.$space-2xl;
 }
 
 .project-card {
-    border: 1px solid variables.$border-subtle;
+    border: 1px solid variables.$ash-grey;
     border-radius: variables.$border-radius-sm;
     padding: variables.$space-xl;
     margin-bottom: variables.$space-xl;
@@ -38,4 +40,88 @@
 .project-meta {
     font-size: variables.$font-size-sm;
     color: color.adjust(variables.$text-muted, $lightness: 12%);
+}
+
+// Homepage "Featured Project" band: edge to edge, copy on the left and
+// screenshot on the right, split into two equal halves on the shared grid.
+.featured-band {
+    @include collage.band(variables.$dusty-taupe);
+    @include containers.container-grain(0.08);
+
+    >.featured-collage {
+        @include containers.container-grain-content;
+    }
+}
+
+.featured-collage {
+    @include collage.band-inner;
+    @include collage.canvas($gap: variables.$space-3xl, $align: start);
+}
+
+.featured-project-text {
+    @include collage.cell(1, 7);
+    // align-self: center;
+    color: variables.$charcoal;
+}
+
+.featured-project-title {
+    @include collage.display(variables.$fs-display-lg, 600);
+    color: variables.$charcoal;
+    margin-bottom: variables.$space-md;
+}
+
+.featured-project-description {
+    font-family: variables.$font-family-mono-retro;
+    font-size: variables.$fs-body-fluid;
+    line-height: variables.$line-height-relaxed;
+    margin-bottom: variables.$space-xl;
+}
+
+.featured-project-cta {
+    @include containers.container-lift;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    border: 2px solid variables.$charcoal;
+    padding: 0 variables.$space-xl;
+    height: 2.25rem;
+    background: variables.$charcoal;
+    color: variables.$warm-cream;
+    font-family: variables.$font-family-mono-retro;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+
+    &:hover {
+        background: variables.$deep-olive;
+        color: variables.$warm-cream;
+    }
+}
+
+.featured-project-media {
+    @include collage.cell(7, 13);
+    @include collage.frame(variables.$border-radius-md);
+}
+
+.featured-project-placeholder {
+    @include containers.container-flex-center;
+    width: 100%;
+    height: 100%;
+    background: variables.$deep-olive;
+}
+
+.featured-project-placeholder-icon {
+    width: 5rem;
+    height: 5rem;
+    color: variables.$warm-cream;
+}
+
+@media screen and (max-width: variables.$bp-tablet) {
+    .featured-collage {
+        @include collage.collapse(variables.$space-xl);
+    }
+
+    .featured-project-media>.frame__clip {
+        aspect-ratio: 3 / 2;
+    }
 }

@@ -1,15 +1,92 @@
+@use "sass:color";
 @use "variables";
+@use "containers";
+@use "collage";
 
-// Homepage hero row: headshot + bio, pulled up toward the header and
-// widened toward the viewport edges.
-.hero-section {
-    padding-top: variables.$space-xs;
-    padding-bottom: variables.$space-xs;
-    padding-left: 0;
-    padding-right: 0;
+// The hero is a detached floating panel: inset from the viewport on all four
+// sides, rounded on every corner, and separated from the edge-to-edge bands
+// below. The gutter it leaves is the only place the topographic background
+// shows through.
+.hero-frame {
+    @include collage.inset-column;
+    padding-block: variables.$space-md variables.$space-xl;
 }
 
-.hero-section .container.is-fluid {
-    padding-left: variables.$space-xs;
-    padding-right: variables.$space-xs;
+// Hero panel: headshot on the left, bio set directly on the olive ground.
+.hero-band {
+    @include collage.band(variables.$deep-olive);
+    border-radius: variables.$border-radius-xl;
+    @include containers.container-grain(0.11);
+    background-color: color-mix(in srgb, variables.$deep-olive 65%, transparent);
+    padding-block: variables.$space-2xl;
+    padding-inline: variables.$space-2xl;
+
+    >.hero-collage {
+        @include containers.container-grain-content;
+    }
+}
+
+// Columns adjacent rather than overlapping — 1/6 ends on the same grid line
+// 6/13 begins on. The intro is short, so it centres against the portrait
+// rather than hanging from its top edge.
+.hero-collage {
+    @include collage.canvas($gap: variables.$space-3xl, $align: center);
+}
+
+.hero-portrait {
+    @include collage.cell(1, 6);
+    @include collage.frame(variables.$border-radius-md);
+
+    // The portrait is the taller grid item, so this ratio sets the panel's
+    // height: the column is a fixed share of the width, and the ratio turns
+    // that width into a height. Taller <-> shorter: 4/5, 1/1, 8/7, 5/4, 4/3.
+    >.frame__clip {
+        aspect-ratio: 8 / 7;
+    }
+}
+
+// Name plate: eyebrow, name and a one-line tagline. The prose that used to
+// live here is now its own band (_about.scss).
+.hero-intro {
+    @include collage.cell(6, 13);
+    color: variables.$warm-cream;
+
+    .section-eyebrow {
+        color: variables.$khaki-beige;
+    }
+}
+
+.hero-tagline {
+    font-family: variables.$font-family-mono-retro;
+    // A step above body copy — it is the only prose in the panel.
+    font-size: clamp(1rem, 0.85rem + 0.7vw, 1.375rem);
+    line-height: variables.$line-height-relaxed;
+    max-width: 48ch;
+    margin: 0;
+}
+
+.hero-name {
+    @include collage.display(variables.$fs-display-xl, 700);
+    color: variables.$mustard-yellow;
+    margin-bottom: variables.$space-lg;
+}
+
+.hero-pronouns {
+    font-family: variables.$font-family-mono-retro;
+    font-size: 0.28em;
+    font-weight: variables.$font-weight-normal;
+    letter-spacing: 0;
+    color: variables.$khaki-beige;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+@media screen and (max-width: variables.$bp-tablet) {
+    .hero-collage {
+        @include collage.collapse(variables.$space-xl);
+    }
+
+    .hero-portrait>.frame__clip {
+        aspect-ratio: 4 / 3;
+    }
 }
